@@ -1,0 +1,10 @@
+{
+  "name": "rimworld-moddev-basic",
+  "version": "1.0.0",
+  "description": "RimWorld mod 制作技能，不含平台生图。包含引导、环境、制作、排错和发行五个技能。与 Image 版技能同名，只安装其中一版。",
+  "author": {
+    "name": "pxy6666"
+  },
+  "repository": "https://github.com/pxy6666/Rimworld-ModDev-skill",
+  "keywords": ["rimworld", "mod", "skills"]
+}

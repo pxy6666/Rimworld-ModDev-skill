@@ -1,0 +1,23 @@
+{
+  "name": "rimworld-moddev-skill",
+  "owner": {
+    "name": "pxy6666"
+  },
+  "metadata": {
+    "description": "RimWorld mod 制作技能。Basic 不含平台生图，Image 含生图流程。两套技能同名，只安装其中一版。"
+  },
+  "plugins": [
+    {
+      "name": "rimworld-moddev-basic",
+      "source": "basic",
+      "description": "RimWorld mod 制作技能，不含平台生图。贴图使用已有、外部提供或允许复用的资源。",
+      "keywords": ["rimworld", "mod", "skills"]
+    },
+    {
+      "name": "rimworld-moddev-image",
+      "source": "image",
+      "description": "RimWorld mod 制作技能，含平台生图、来源配置和产物导入。",
+      "keywords": ["rimworld", "mod", "skills", "image"]
+    }
+  ]
+}
