@@ -70,3 +70,77 @@ image/skills/                      五个技能，多出生图流程
 使用者在 Cursor 里更新已安装的插件，或重新从本仓库导入。
 
 作者改的是本地技能源，而不是直接改 GitHub 上的这两份副本。源改完并同步出 Basic、Image 后，再覆盖本仓库对应的 `basic/skills`、`image/skills` 并推送。两版要一起更新，避免公开副本和源不一致。
+
+
+RimWorld Mod Development Skill
+
+*This skill was mostly created by AI, so note that some content may be incorrect. If you have suggestions or questions, please point them out.*
+
+This is an Agent Skill for Cursor and ChatGPT, used to assist with RimWorld mod development. The repository contains two plugins with the same workflow and content. One (the IMAGE version) brings image generation into the skill process; the other does not.
+
+Repository URL: https://github.com/pxy6666/Rimworld-ModDev-skill
+
+This does not include game files, build tools, local paths, or keys. The skill only tells the agent how to make a mod. You still need to specify the game path (for referencing vanilla and DLC XML), or, when needed, submit to the CLI the mod that needs to be referenced or used as a base.
+
+Currently, the skill references RimWorld base game and DLC files and Harmony (lib mod), and may use: RimSage, RiMCP hybrid, RimSearcher, and DecompilerServer.
+
+Which Version to Choose
+
+The five skills in the two plugins have the same names. Install only one of them in Cursor. If both are installed, skills with the same names overlap, and the agent cannot reliably choose the correct version.
+
+Plugin	Directory	When to use
+
+rimworld-moddev-basic	basic/	Textures already exist, or are provided by you or externally. Does not rely on other models on a CLI platform or invocation methods to generate images.
+rimworld-moddev-image	image/	Need to go from appearance requirements to asset specs, platform image generation, import, visual inspection, and reference binding.
+Both versions include six modding scopes, plus requirements, planning, production, and review. Both versions check whether textures are bound, whether they look correct, and require in-game evidence. Basic does not invoke image-generation planning and import.
+
+Five Skills
+
+After installation, type / in the Agent chat to invoke the corresponding skill by name. The agent will also select them automatically when the description matches.
+
+Skill	Purpose
+
+rimworld-help	For first-time use, or when you are unsure of the next step. It reads the current state and tells you which skill to use.
+rimworld-setup	Checks and prepares the development environment. Useful for missing dependencies, switching computers, or retrieval/MCP connection issues.
+rimworld-mod	Creates or modifies mods: Def, C#, UI, upstream integration, and post-completion verification.
+rimworld-debug	Diagnoses loading, runtime, compatibility, save, performance, and game version migration issues.
+rimworld-release	Prepares release packages and verifies version, dependencies, asset licenses, and verification records. Only performs publishing when explicitly asked to upload to the Workshop.
+The Image version's rimworld-mod additionally includes references/image-pipeline.md. The Basic version does not have this file.
+
+Installing in Cursor
+Open Cursor's Customize.
+
+Choose import from GitHub Repository.
+
+Enter https://github.com/pxy6666/Rimworld-ModDev-skill.
+
+Install only one of the two listed plugins: Basic or Image.
+
+Open a new Agent conversation. If the list still shows old skills, reopen Cursor and try again.
+
+The repository root contains .cursor-plugin/marketplace.json, which Cursor uses to recognize the two plugins. If you only clone the folder locally and open it with Cursor, the skills will not take effect automatically, because the skills are not in .agents/skills/ or .cursor/skills/. In other words, you need to install them manually yourself or let the CLI install them for you.
+
+Directory
+
+.cursor-plugin/marketplace.json    Manifest for the two plugins
+basic/.cursor-plugin/plugin.json   Basic plugin description
+basic/skills/                      Five skills
+image/.cursor-plugin/plugin.json   Image plugin description
+image/skills/                      Five skills, with an extra image-generation workflow
+Each skill is a folder, with SKILL.md as the entry point. Longer explanations are in the sibling references/ directory, which the agent reads only when needed.
+
+Usage Notes
+
+The skill assumes the target project has its own packageId, Def prefix, and build configuration. Do not apply the example project's identity to a new mod. If needed, explain the situation clearly to the agent.
+
+Local game paths and tool paths should be placed in the local configuration of the consuming project, and must not be written into this repository.
+
+The release skill only creates local release packages by default. Uploading to the Steam Workshop requires separate explicit authorization from you, or you must do it directly yourself.
+
+Editing the skill text will not modify the mod project you already have open. After installation, these skills are only used when you start a new conversation in the mod project.
+
+Updates
+
+Users update the installed plugin in Cursor, or re-import from this repository.
+
+The author modifies the local skill source, not these two copies on GitHub directly. After modifying the source and syncing out Basic and Image, overwrite the corresponding basic/skills and image/skills in this repository and push. Both versions must be updated together to avoid inconsistency between the public copies and the source.
