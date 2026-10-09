@@ -11,7 +11,7 @@
 | 快速查原版 | 可调用 RimSage 在线服务，或版本明确的本地证据 | 本地安装 Bun/Node、自建全部索引 |
 | 复杂关系检索 | 确需时准备 RiMCP 的索引和所选服务 | 每次任务启动嵌入服务 |
 
-先用 `powershell -NoProfile -File tools/preflight.ps1 -Purpose Inspect`。已明确使用本项目 XML/C# 工具时用 Xml/CSharp。RimSearcher/DecompilerServer 未被此脚本找到，仅说明默认/配置路径未发现，需结合当前客户端工具与已安装的技能目录检查。
+目标工程实际提供 preflight 时可用 `powershell -NoProfile -File tools/preflight.ps1 -Purpose Inspect`，相应工具任务用 Xml/CSharp；没有则直接核对所需能力。RimSearcher/DecompilerServer 未被脚本找到只说明默认/配置路径未发现，结合当前客户端与实际安装位置判断。技能包不包含该脚本。
 
 ## 三层验证
 
@@ -29,7 +29,7 @@
 
 上面要求于 2026-10-08 核对。实际安装时重新读取对应发布版本要求，不能用固定文本猜平台/下载地址或校验值。程序已装且有效时直接复用。
 
-本项目 `config/toolchain.example.json` 给工具路径格式；复制成不提交的 toolchain.local.json 后填实际路径。该文件仅帮助检查，不注册 MCP，也不代表程序/数据库已验证。
+目标工程有 `config/toolchain.example.json` 等样例时按其格式填写本地路径，否则沿用实际工程约定，不强造同名配置。路径配置仅帮助检查，不注册 MCP，也不证明程序/数据库已验证。
 
 ## 给新用户的交付
 

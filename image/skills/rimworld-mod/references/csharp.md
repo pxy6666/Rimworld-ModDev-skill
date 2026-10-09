@@ -1,5 +1,7 @@
 # C# 行为与状态
 
+从 [用途/类型](classification.md) 和已确认功能记录进入；先核对 [配置契约](contracts.md)、上游与逻辑职责，不因为原版字段无法表达就直接堆补丁。XML/设置与代码连接同一权威参数来源；完成后更新 [检查点](project-state.md)。
+
 - 首先复用 API 或官方扩展点；选择 ThingComp、Verb、Hediff、JobDriver、组件等由职责决定，允许必要组合。
 - 若功能由 Def 配置，定义 XML 配置面与读取者，再实现逻辑；CompProperties 设置 compClass，XML 指向配置类型。系统/显示功能也可由 Mod 启动与事件挂钩，使用 ModSettings 或合适配置方式，不为 C# 强造 Def。
 - public 不等于稳定 API，检查类型可访问性、构造、生命周期、virtual/abstract 与约束。protected 覆写在合法派生类中完成。

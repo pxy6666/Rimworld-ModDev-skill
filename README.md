@@ -1,146 +1,144 @@
-# RimWorld Mod 制作技能
+# RimWorld ModDev Skill
 
-*本skill基本由AI制作，所以需要注意部分内容是否正确，如有建议或疑问谨请指出*
+给 Cursor、Codex 等支持 Agent Skills 的代理使用的 RimWorld mod 开发流程。它帮助代理把玩家需求转换为可查证的 Def、XML、C# 和资源实现，也支持基于其他 mod 的调用、衍生与兼容补丁。
 
-这是一套给 Cursor和Chatgpt 用的 Agent Skill，用来辅助制作 RimWorld mod。仓库里有两个插件，流程和内容相同，一个（IMAGE版）是把图片生成带进skill过程的，另一个就没有。
+核心顺序是：**先确认用途与真实类型，再查模板和默认值；真正未定的玩法数值与资源才交给玩家或 CLI 决定。**
 
-仓库地址：<https://github.com/pxy6666/Rimworld-ModDev-skill>
+当前版本：**1.1.0**。项目仍在改进，技能内容包含 AI 辅助编写；静态检查、编译成功和游戏内验证分别记录，不能保证所有客户端、游戏版本和 mod 组合都已验证。
 
-这不包含游戏文件、编译工具、本机路径或密钥。技能只告诉代理怎么做 mod，也需要明确游戏的路径（用于参考原版和dlcXML）或者在需要时向CLI提交需要参考或基于制作的mod；
+## 选择 Basic 或 Image
 
-目前skill会参考rimworld游戏本体和dlc文件和Harmony（lib mod），可能会用到：RimSage，RiMCP hybrid ，RimSearcher 和DecompilerServer
-
-## 选哪一版
-
-两个插件里的五个技能名字相同。Cursor 里只安装其中一个。两个都装时，同名技能会叠在一起，代理无法稳定选用正确版本。
-
-| 插件 | 目录 | 什么时候用 |
+| 版本 | 目录 / Cursor 插件名 | 适用情况 |
 | --- | --- | --- |
-| `rimworld-moddev-basic` | `basic/` | 贴图已经有了，或由你自己、外部提供。不依赖CLI平台的其他模型或者调用方式生图。 |
-| `rimworld-moddev-image` | `image/` | 需要从外观需求走到资源规格、平台生图、导入、视觉检查和引用绑定。 |
+| Basic | [basic/](basic/) / `rimworld-moddev-basic` | 使用已有、外部提供或允许复用的素材，不接入平台生图流程 |
+| Image | [image/](image/) / `rimworld-moddev-image` | 需要外观需求 → 资源规格 → 生图 → 导入 PNG → 视觉检查 → 绑定引用 → 游戏验收 |
 
-两版都包含六种制作范围，以及需求、计划、制作、复查。两版都会核对贴图是否绑上、看起来是否正确，并要求游戏内证据。Basic 不调用生图计划和导入。
+两版都包含相同的五个技能、需求/计划/制作/复查流程与资源检查。Image 需要会话中实际可用的图像工具，或用户选定且可调用的外部来源；安装技能不会自动获得生图服务。
+
+**同一工程/客户端只启用一版。** 两版技能同名，同时安装可能出现重复入口。切换时先移除或禁用旧版；手动安装须替换整套五个技能，避免残留 Image 专属文件。
 
 ## 五个技能
 
-安装后，在 Agent 对话里输入 `/`，可以按名字叫出对应技能。描述匹配时，代理也会自己选用。
-
-| 技能 | 作用 |
+| 技能 | 什么时候用 |
 | --- | --- |
-| `rimworld-help` | 第一次使用，或不确定下一步时。它读取当前状态，告诉你该用哪个技能。 |
-| `rimworld-setup` | 检查并准备开发环境。适用于缺依赖、换电脑，或检索、MCP 连不上。 |
-| `rimworld-mod` | 制作或修改 mod：Def、C#、界面、上游整合，以及完成后的验证。 |
-| `rimworld-debug` | 诊断加载、运行、兼容、存档、性能和游戏版本迁移问题。 |
-| `rimworld-release` | 准备发行包，核对版本、依赖、素材许可和验证记录。只有明确要求上传工坊时才执行发布。 |
+| `rimworld-help` | 第一次使用、目标尚不明确，或不知道下一步 |
+| `rimworld-setup` | 检查游戏路径、编译环境、检索/MCP 和必要工具能力 |
+| `rimworld-mod` | 制作/修改内容、C# 系统、界面、上游整合，或连续添加功能 |
+| `rimworld-debug` | 排查加载、XML、行为、兼容、存档、性能或版本迁移问题 |
+| `rimworld-release` | 核对成果、依赖、资源来源并准备发行包；明确要求时才上传工坊 |
 
-Image 版的 `rimworld-mod` 额外带有 `references/image-pipeline.md`。Basic 版没有这个文件。
+## 安装
 
-## 在 Cursor 里安装
+### Cursor
 
-1. 打开 Cursor 的 Customize。
-2. 选择从 GitHub 仓库导入（From GitHub Repository）。
-3. 填入 `https://github.com/pxy6666/Rimworld-ModDev-skill`。
-4. 在列出的两个插件里只安装一个：Basic 或 Image。
-5. 新开一个 Agent 对话。若列表里仍是旧技能，重新打开 Cursor 后再试。
+本仓库保留 `.cursor-plugin/marketplace.json` 及 Basic/Image 两个插件清单。在支持仓库导入的 Cursor 入口中填入本仓库地址，再只安装其中一版。插件从 Customize 管理；团队市场可由管理员通过 Dashboard → Plugins & MCPs → Add Marketplace → Import from Repo 导入。入口因客户端版本或账户而异，找不到仓库导入时可用下面的手动方式。[Cursor 插件文档](https://cursor.com/docs/plugins)
 
-这个仓库根目录有 `.cursor-plugin/marketplace.json`，Cursor 靠它识别两个插件。只把文件夹克隆到本地、用 Cursor 打开，技能不会自动生效，因为技能不在 `.agents/skills/` 或 `.cursor/skills/` 里。
-也就是说需要自己手动安装一下或者直接交给CLI帮你安装。
+安装后可在 Agent 对话输入 `/rimworld-help` 或 `/rimworld-mod`，也可描述目标让代理匹配技能。[Cursor 技能文档](https://cursor.com/docs/skills)
 
-## 目录
+### Codex / Cursor 手动安装
+
+克隆或下载本仓库，选择 `basic/skills/` 或 `image/skills/`，把其中**五个技能文件夹整体复制**到目标 mod 工程的 `.agents/skills/`：
 
 ```text
-.cursor-plugin/marketplace.json    两个插件的清单
-basic/.cursor-plugin/plugin.json   Basic 插件说明
-basic/skills/                      五个技能
-image/.cursor-plugin/plugin.json   Image 插件说明
-image/skills/                      五个技能，多出生图流程
+YourMod/
+└── .agents/skills/
+    ├── rimworld-help/
+    ├── rimworld-setup/
+    ├── rimworld-mod/
+    ├── rimworld-debug/
+    └── rimworld-release/
 ```
 
-每个技能是一个文件夹，入口是 `SKILL.md`。较长的说明在同级 `references/` 里，代理需要时才读取。
+复制 `SKILL.md` 时保留同目录的 `references/`，不要只复制入口文件或把 Basic/Image 两个父目录一起放进去。已有同名技能先确认来源，不直接覆盖自己的修改。
 
-## 使用时要注意
+Codex 的项目级技能路径是 `.agents/skills/`，用户级路径为 `~/.agents/skills/`；CLI/IDE 可通过 `/skills` 查看或用 `$rimworld-help` 指定技能。更新未显示时重新发现或重启客户端。[OpenAI 技能文档](https://learn.chatgpt.com/docs/build-skills)
 
-- 技能假设目标工程自己有 packageId、Def 前缀和构建配置。不要把示例工程的身份套到新 mod 上，如果需要，请把情况向agent说清楚。
-- 本机游戏路径、工具路径放在使用方工程的本地配置里，不要写进这个仓库。
-- 发行技能默认只做本地发行包。上传创意工坊需要你另行明确授权或直接进行操作。
-- 改技能正文不会改你已经打开的那个 mod 工程。装好之后，在 mod 工程里新开对话才会用到这些技能。
+Cursor 也支持项目级 `.agents/skills/` 与 `.cursor/skills/`。两客户端在同一工程使用时可共享前者。单纯打开下载后的本仓库，不等于把技能安装进你的 mod 工程。[Cursor 技能目录](https://cursor.com/docs/skills)
 
-## 更新
+本仓库的插件清单是 Cursor 格式；这里的 Codex 用法是技能文件夹安装，不代表已经提供 Codex/ChatGPT 原生插件。其他平台需支持相应技能加载，并具有工程文件访问与执行能力。
 
-使用者在 Cursor 里更新已安装的插件，或重新从本仓库导入。
+## 第一次使用
 
-作者改的是本地技能源，而不是直接改 GitHub 上的这两份副本。源改完并同步出 Basic、Image 后，再覆盖本仓库对应的 `basic/skills`、`image/skills` 并推送。两版要一起更新，避免公开副本和源不一致。
+在实际 mod 工程中开始会话。提供已有项目位置、RimWorld 版本、游戏安装路径及有关 DLC；新工程也可以让代理先整理身份和结构。需要参考上游时提供其名称、路径或仓库，以及你想调用、衍生还是修正什么。
 
+不知道环境是否准备好，可先说：
 
-RimWorld Mod Development Skill
+```text
+请使用 rimworld-help。我要为 RimWorld 1.6 制作一个独立 mod。
+先检查当前工程与所需环境，说明缺什么，再带我整理需求和计划。
+```
 
-*This skill was mostly created by AI, so note that some content may be incorrect. If you have suggestions or questions, please point them out.*
+明确制作目标时可以这样开始：
 
-This is an Agent Skill for Cursor and ChatGPT, used to assist with RimWorld mod development. The repository contains two plugins with the same workflow and content. One (the IMAGE version) brings image generation into the skill process; the other does not.
+```text
+请使用 rimworld-mod，制作一把可以直接远程投掷的吸血飞刀。
+命中造成伤害后为使用者恢复生命，贴图复用原版。
+先确认实际攻击类型与实现路径，再给我计划；不要立即制作。
+伤害由我选择，其余未定数值参考原版决定，使用混合模式。
+```
 
-Repository URL: https://github.com/pxy6666/Rimworld-ModDev-skill
+无需自己填写内部类名、全部 XML 或完整美术规格。代理负责技术查证；玩法取舍、必要资源来源和未定数值按你选的模式解决。
 
-This does not include game files, build tools, local paths, or keys. The skill only tells the agent how to make a mod. You still need to specify the game path (for referencing vanilla and DLC XML), or, when needed, submit to the CLI the mod that needs to be referenced or used as a base.
+## 制作过程
 
-Currently, the skill references RimWorld base game and DLC files and Harmony (lib mod), and may use: RimSage, RiMCP hybrid, RimSearcher, and DecompilerServer.
+1. 分解需求，判断内容的真实用途、类型、触发与执行链，初步判断是否需要 C#。
+2. 对关键不确定方向给玩家选项，分析原版或上游 mod 提供的接口。
+3. 复用有效证据，优先 MCP 小查询；必要时核对 XML、源码/DLL 或运行时 Def，形成配置契约与记录。
+4. 展示经过技术自检的具体计划，确认计划与制作模式后进入制作；已有明确同意或自主规划实施委托可沿用。
+5. 每个功能块核对类型/契约、补真正缺项、准备必要资源、制作并复查。
+6. 检查整体获取、触发、组合与相关存档/视觉，准确报告通过、失败或未验证项。
 
-Which Version to Choose
+制作模式只处理真正未定项：
 
-The five skills in the two plugins have the same names. Install only one of them in Cursor. If both are installed, skills with the same names overlap, and the agent cannot reliably choose the correct version.
+| 模式 | 谁决定 |
+| --- | --- |
+| 用户控制 | 代理提出有依据的候选与影响，玩家选择 |
+| CLI 决定 | 在授权范围内参照同用途、匹配版本的原版或已选上游，并记录理由 |
+| 混合 | 玩家锁定关键项，其余明确委托代理 |
 
-Plugin	Directory	When to use
+已给定的合法 `0`/`false` 不算缺项；已满足目标的继承/默认不用重复填。字段常见不等于必填，少见不等于无效。“数值你定”也不自动代替整个计划确认。
 
-rimworld-moddev-basic	basic/	Textures already exist, or are provided by you or externally. Does not rely on other models on a CLI platform or invocation methods to generate images.
-rimworld-moddev-image	image/	Need to go from appearance requirements to asset specs, platform image generation, import, visual inspection, and reference binding.
-Both versions include six modding scopes, plus requirements, planning, production, and review. Both versions check whether textures are bound, whether they look correct, and require in-game evidence. Basic does not invoke image-generation planning and import.
+### 六种制作范围
 
-Five Skills
+| 范围 | 允许的主要工作 |
+| --- | --- |
+| L1 | 原版/已有自身内容的局部数据、贴图、声音或文案修改 |
+| L2 | 原版/DLC XML 内容，不新增自己的 DLL |
+| L3 | 原版/DLC C# 逻辑、系统或显示功能，Def 按需出现 |
+| L4 | 基于上游的 XML/资源引用、衍生或补丁 |
+| L5 | 调用上游代码、衍生逻辑或 C# 兼容补丁 |
+| L6 | 在授权内直接编辑上游工程 |
 
-After installation, type / in the Agent chat to invoke the corresponding skill by name. The agent will also select them automatically when the description matches.
+它们限定修改范围，不是必须逐级执行的六步。完整 mod 可以混合多个功能块；库型与内容型 mod 都可能提供可调用的代码或可引用的配置。
 
-Skill	Purpose
+### 连续添加内容
 
-rimworld-help	For first-time use, or when you are unsure of the next step. It reads the current state and tells you which skill to use.
-rimworld-setup	Checks and prepares the development environment. Useful for missing dependencies, switching computers, or retrieval/MCP connection issues.
-rimworld-mod	Creates or modifies mods: Def, C#, UI, upstream integration, and post-completion verification.
-rimworld-debug	Diagnoses loading, runtime, compatibility, save, performance, and game version migration issues.
-rimworld-release	Prepares release packages and verifies version, dependencies, asset licenses, and verification records. Only performs publishing when explicitly asked to upload to the Workshop.
-The Image version's rimworld-mod additionally includes references/image-pipeline.md. The Basic version does not have this file.
+后续可以直接要求“继续上次功能”或“给这个 mod 增加一个工作台”。代理从项目概览、功能记录、引用索引和检查点恢复，只补查受影响项，不每次重走全部查询。小项目可共用一份短记录。
 
-Installing in Cursor
-Open Cursor's Customize.
+每次增量完成后交付并等待新需求。要求中止某部分时保存停止位置与遗留项；再次继续时核对实际文件和证据。项目文档不替代真实实现，来源/版本变化会使相关证据失效。
 
-Choose import from GitHub Repository.
+## 工具与资源准备
 
-Enter https://github.com/pxy6666/Rimworld-ModDev-skill.
+按任务使用 [RimSage](https://github.com/realloon/RimSage)、[RimSearcher](https://github.com/kearril/RimSearcher)、[DecompilerServer](https://github.com/pardeike/DecompilerServer) 或已有检索工具，不要求同时安装全部能力。原始 XML、源码/DLL 和运行时 Def 各回答不同问题；MCP 不可用或版本不匹配时记录回退原因及剩余缺口。
 
-Install only one of the two listed plugins: Basic or Image.
+游戏路径与相关程序集由使用方提供；C# 任务才准备适合目标游戏/上游的构建环境。贴图、声音和文本只请求本功能真正需要的部分，允许经确认的原版/上游运行时资源引用。Image 来源偏好可记录在项目中，实际能否生成还要检查当前工具。
 
-Open a new Agent conversation. If the list still shows old skills, reopen Cursor and try again.
+**此仓库分发技能与必要参考页，不含游戏文件、编译器、工程 CLI、研究报告、统计数据库、日志、本机配置或密钥。** 技能提到的 `tools/preflight.ps1`、`tools/mod.ps1`、统计查询或资源导入助手，只有目标工程实际提供时才使用；没有就采用真实可用的查询、构建和文件工具，不运行缺失脚本。
 
-The repository root contains .cursor-plugin/marketplace.json, which Cursor uses to recognize the two plugins. If you only clone the folder locally and open it with Cursor, the skills will not take effect automatically, because the skills are not in .agents/skills/ or .cursor/skills/. In other words, you need to install them manually yourself or let the CLI install them for you.
+## 更新与反馈
 
-Directory
+插件用户从原安装入口刷新/更新；手动用户重新下载并替换选定版本的整套技能。维护时从公共源码同步两版后一起发布，保留 Basic/Image 的资源差异。
 
-.cursor-plugin/marketplace.json    Manifest for the two plugins
-basic/.cursor-plugin/plugin.json   Basic plugin description
-basic/skills/                      Five skills
-image/.cursor-plugin/plugin.json   Image plugin description
-image/skills/                      Five skills, with an extra image-generation workflow
-Each skill is a folder, with SKILL.md as the entry point. Longer explanations are in the sibling references/ directory, which the agent reads only when needed.
+发行前仍需游戏验收。上传工坊、更改游戏启用列表或启动游戏需要相应任务授权，不由安装技能自动执行。欢迎通过 Issues 提交问题，附客户端、游戏/上游版本、相关需求及必要的脱敏日志片段。
 
-Usage Notes
+## English quick start
 
-The skill assumes the target project has its own packageId, Def prefix, and build configuration. Do not apply the example project's identity to a new mod. If needed, explain the situation clearly to the agent.
+RimWorld ModDev Skill is a workflow for agents that support Agent Skills. Version **1.1.0** covers planning, Def/XML and C# work, upstream integration, debugging, assets, and release preparation.
 
-Local game paths and tool paths should be placed in the local configuration of the consuming project, and must not be written into this repository.
+Choose **Basic** for supplied or reused assets, or **Image** for a workflow that includes image generation. Enable one variant only. Image generation requires an actual tool or a configured, supported provider; the skill does not supply the service.
 
-The release skill only creates local release packages by default. Uploading to the Steam Workshop requires separate explicit authorization from you, or you must do it directly yourself.
+For manual setup, copy all five folders from `basic/skills/` or `image/skills/` into your mod project's `.agents/skills/`, keeping their `references/` folders. Cursor plugin users can install one variant through a supported marketplace/repository import. The manifests in this repository use Cursor's format.
 
-Editing the skill text will not modify the mod project you already have open. After installation, these skills are only used when you start a new conversation in the mod project.
+Start with `rimworld-help` or `rimworld-setup`. For development, provide your game version, project/game paths, intended player behavior, constraints, and any selected upstream mods. Choose user-controlled values, agent-decided values, or a mixed mode. The agent establishes the actual content type, verifies templates/defaults and interfaces, records a concrete plan, and obtains confirmation before implementation unless an applicable prior approval or explicit delegation already exists.
 
-Updates
-
-Users update the installed plugin in Cursor, or re-import from this repository.
-
-The author modifies the local skill source, not these two copies on GitHub directly. After modifying the source and syncing out Basic and Image, overwrite the corresponding basic/skills and image/skills in this repository and push. Both versions must be updated together to avoid inconsistency between the public copies and the source.
+Project records support incremental additions and resuming work. Evidence is reused only while its source and conditions remain valid. The package contains instructions and reference pages, not game code, development tools, local databases, or credentials. Static checks and compilation do not replace in-game acceptance.

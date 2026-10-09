@@ -1,6 +1,6 @@
 {
   "name": "rimworld-moddev-image",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "RimWorld mod 制作技能，含平台生图、来源配置和产物导入。包含引导、环境、制作、排错和发行五个技能。与 Basic 版技能同名，只安装其中一版。",
   "author": {
     "name": "pxy6666"

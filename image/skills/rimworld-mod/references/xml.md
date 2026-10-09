@@ -1,5 +1,7 @@
 # XML 与补丁
 
+先按 [classification.md](classification.md) 确认用途、实际类型/配置 Class 与执行链，再按 [contracts.md](contracts.md) 核对模板、继承、合法默认和值来源。类型表和频率表只帮助查证，不是完整必填清单。实现时读取功能记录并保存变更/验证，见 [project-state.md](project-state.md)。
+
 - 用实际同类 Def 核对字段。Name/Abstract 是模板，ParentName 指模板 Name；不要从运行时 defName 猜模板。
 - 区分继承、覆写、列表追加与替换。子项可以覆写父级字段；先确认是否重复继承 comps/verbs。
 - 补丁的 XPath 针对加载输入，需考虑此前补丁；继承后字段存在不证明输入目标存在。只改必要节点，应用后再验证最终值。
