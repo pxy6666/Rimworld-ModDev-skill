@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "id": "rimworld-1.6.4871-rev590",
+  "target": "1.6",
+  "game": {
+    "version": "1.6.4871",
+    "revision": "590",
+    "versionText": "1.6.4871 rev590"
+  },
+  "runtime": {
+    "family": "Unity/Mono",
+    "version": "not_identified",
+    "frameworkReference": {
+      "name": "mscorlib",
+      "version": "4.0.0.0"
+    },
+    "evidence": "MonoBleedingEdge directory and Assembly-CSharp references; no runtime execution"
+  },
+  "layout": {
+    "gameAssemblies": "RimWorldWin64_Data/Managed/",
+    "data": "Data",
+    "executable": "RimWorldWin64.exe",
+    "logs": [
+      "Player.log"
+    ],
+    "logSelection": "Read session game version; location is not proof of version"
+  },
+  "assemblies": [
+    {
+      "name": "Assembly-CSharp",
+      "version": "1.6.9676.17735",
+      "sha256": "5cf1b5be399d5b1c9c56ca72c9d35b4ecf307feacf5859d04ac5a1aa5926356a",
+      "relativePath": "RimWorldWin64_Data/Managed/Assembly-CSharp.dll",
+      "origin": "game"
+    },
+    {
+      "name": "UnityEngine.CoreModule",
+      "version": "0.0.0.0",
+      "sha256": "c5c58ea254834291780a1d6c388c241443d07167b4a4b890a23c9494f626ddba",
+      "relativePath": "RimWorldWin64_Data/Managed/UnityEngine.CoreModule.dll",
+      "origin": "game"
+    },
+    {
+      "name": "UnityEngine.AudioModule",
+      "version": "0.0.0.0",
+      "sha256": "abc57ac9f40d0b5151c248726549f5470c338bbd03183d5146b61d486512b797",
+      "relativePath": "RimWorldWin64_Data/Managed/UnityEngine.AudioModule.dll",
+      "origin": "game"
+    },
+    {
+      "name": "0Harmony",
+      "version": "2.4.3.0",
+      "sha256": "8ac54fdf0fab257148d68bc744d67609b74554ee72a4f3452e32030eaad009c6",
+      "relativePath": "1.6/Assemblies/0Harmony.dll",
+      "origin": "harmony"
+    }
+  ],
+  "harmony": {
+    "packageId": "brrainz.harmony",
+    "version": "2.4.3.0",
+    "sha256": "8ac54fdf0fab257148d68bc744d67609b74554ee72a4f3452e32030eaad009c6",
+    "loadFolder": "1.6",
+    "selectionEvidence": "LoadFolders.xml v1.6 includes root and 1.6",
+    "runtimeLoaded": false,
+    "note": "Installed provider snapshot; project may choose another provider. About version is not DLL version."
+  },
+  "coverage": {
+    "kind": "selected_declared_metadata",
+    "catalog": "../api/1.6.json",
+    "notCovered": [
+      "all other types/assemblies",
+      "inherited members",
+      "generic constraints",
+      "parameter default values",
+      "XML effective values",
+      "method semantics",
+      "loaded mods and runtime behavior"
+    ]
+  },
+  "evidence": [
+    {
+      "level": "metadata",
+      "source": "Version.txt, PE metadata, LoadFolders.xml, MonoBleedingEdge layout",
+      "observedDate": "2026-10-14",
+      "runtimeVerified": false
+    }
+  ]
+}

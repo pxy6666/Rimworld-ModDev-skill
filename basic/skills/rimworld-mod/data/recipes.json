@@ -1,0 +1,220 @@
+{
+  "schema": 1,
+  "coverage": "selected recipes; not all APIs or gameplay contracts",
+  "recipes": [
+    {
+      "id": "comp-connection",
+      "purpose": "content",
+      "profileIds": {
+        "1.6": "rimworld-1.6.4871-rev590",
+        "1.7": "rimworld-1.7.4977-rev1248"
+      },
+      "symbolsByTarget": {
+        "1.6": [
+          "rimworld-1.6.4871-rev590|5cf1b5be399d5b1c9c56ca72c9d35b4ecf307feacf5859d04ac5a1aa5926356a|Verse.CompProperties|field|System.Type compClass",
+          "rimworld-1.6.4871-rev590|5cf1b5be399d5b1c9c56ca72c9d35b4ecf307feacf5859d04ac5a1aa5926356a|Verse.ThingDef|field|System.Collections.Generic.List`1<Verse.CompProperties> comps",
+          "rimworld-1.6.4871-rev590|5cf1b5be399d5b1c9c56ca72c9d35b4ecf307feacf5859d04ac5a1aa5926356a|Verse.ThingComp|method|Void PostSpawnSetup(Boolean)"
+        ],
+        "1.7": [
+          "rimworld-1.7.4977-rev1248|3d4f1ddfe71bd8760cb488255e3bdeac9366f537dc1ef813cc6f8d09824e2da9|Verse.CompProperties|field|System.Type compClass",
+          "rimworld-1.7.4977-rev1248|3d4f1ddfe71bd8760cb488255e3bdeac9366f537dc1ef813cc6f8d09824e2da9|Verse.ThingDef|field|System.Collections.Generic.List`1<Verse.CompProperties> comps",
+          "rimworld-1.7.4977-rev1248|3d4f1ddfe71bd8760cb488255e3bdeac9366f537dc1ef813cc6f8d09824e2da9|Verse.ThingComp|method|Void PostSpawnSetup(Boolean)"
+        ]
+      },
+      "chain": "ThingDef.comps → custom CompProperties → compClass → ThingComp",
+      "conditions": [
+        "Class must reference the properties type",
+        "Check XML parser and behavior consumer",
+        "Avoid duplicate registration after load"
+      ],
+      "reference": "../references/usage-examples.md",
+      "tests": [
+        "First and repeated use",
+        "Relevant lifecycle/save checks only",
+        "Original path and actual consumer"
+      ],
+      "evidence": {
+        "metadataAnchors": true,
+        "semanticRecipe": "candidate requiring project-specific consumer evidence",
+        "compiled": false,
+        "loaded": false,
+        "triggered": false,
+        "lifecycle": false,
+        "save": false,
+        "visual": false
+      }
+    },
+    {
+      "id": "settings-state",
+      "purpose": "settings",
+      "profileIds": {
+        "1.6": "rimworld-1.6.4871-rev590",
+        "1.7": "rimworld-1.7.4977-rev1248"
+      },
+      "symbolsByTarget": {
+        "1.6": [
+          "rimworld-1.6.4871-rev590|5cf1b5be399d5b1c9c56ca72c9d35b4ecf307feacf5859d04ac5a1aa5926356a|Verse.ModSettings|method|Void ExposeData()",
+          "rimworld-1.6.4871-rev590|5cf1b5be399d5b1c9c56ca72c9d35b4ecf307feacf5859d04ac5a1aa5926356a|Verse.Scribe_Values|method|Void Look``1(ref !!0, String, !!0, Boolean)"
+        ],
+        "1.7": [
+          "rimworld-1.7.4977-rev1248|3d4f1ddfe71bd8760cb488255e3bdeac9366f537dc1ef813cc6f8d09824e2da9|Verse.ModSettings|method|Void ExposeData()",
+          "rimworld-1.7.4977-rev1248|3d4f1ddfe71bd8760cb488255e3bdeac9366f537dc1ef813cc6f8d09824e2da9|Verse.Scribe_Values|method|Void Look``1(ref !!0, String, !!0, Boolean)"
+        ]
+      },
+      "chain": "ModSettings state → ExposeData → Scribe key/default → restored behavior",
+      "conditions": [
+        "Preserve established keys",
+        "Type/default changes require save review",
+        "Uncaptured optional defaults must be inspected or supplied explicitly"
+      ],
+      "reference": "../references/usage-examples.md",
+      "tests": [
+        "First and repeated use",
+        "Relevant lifecycle/save checks only",
+        "Original path and actual consumer"
+      ],
+      "evidence": {
+        "metadataAnchors": true,
+        "semanticRecipe": "candidate requiring project-specific consumer evidence",
+        "compiled": false,
+        "loaded": false,
+        "triggered": false,
+        "lifecycle": false,
+        "save": false,
+        "visual": false
+      }
+    },
+    {
+      "id": "window-output",
+      "purpose": "ui",
+      "profileIds": {
+        "1.6": "rimworld-1.6.4871-rev590",
+        "1.7": "rimworld-1.7.4977-rev1248"
+      },
+      "symbolsByTarget": {
+        "1.6": [
+          "rimworld-1.6.4871-rev590|5cf1b5be399d5b1c9c56ca72c9d35b4ecf307feacf5859d04ac5a1aa5926356a|Verse.Mod|method|Void DoSettingsWindowContents(UnityEngine.Rect)",
+          "rimworld-1.6.4871-rev590|5cf1b5be399d5b1c9c56ca72c9d35b4ecf307feacf5859d04ac5a1aa5926356a|Verse.Window|method|Void DoWindowContents(UnityEngine.Rect)"
+        ],
+        "1.7": [
+          "rimworld-1.7.4977-rev1248|3d4f1ddfe71bd8760cb488255e3bdeac9366f537dc1ef813cc6f8d09824e2da9|Verse.Mod|method|Void DoSettingsWindowContents(UnityEngine.Rect)",
+          "rimworld-1.7.4977-rev1248|3d4f1ddfe71bd8760cb488255e3bdeac9366f537dc1ef813cc6f8d09824e2da9|Verse.Window|method|Void DoWindowContents(UnityEngine.Rect)"
+        ]
+      },
+      "chain": "Create/register UI → data and input → observable output → close/cleanup",
+      "conditions": [
+        "Select settings page or independent Window by purpose",
+        "Check focus and repeated open/close",
+        "Metadata does not prove rendering or thread behavior"
+      ],
+      "reference": "../references/usage-examples.md",
+      "tests": [
+        "First and repeated use",
+        "Relevant lifecycle/save checks only",
+        "Original path and actual consumer"
+      ],
+      "evidence": {
+        "metadataAnchors": true,
+        "semanticRecipe": "candidate requiring project-specific consumer evidence",
+        "compiled": false,
+        "loaded": false,
+        "triggered": false,
+        "lifecycle": false,
+        "save": false,
+        "visual": false
+      }
+    },
+    {
+      "id": "harmony-patch",
+      "purpose": "harmony",
+      "profileIds": {
+        "1.6": "rimworld-1.6.4871-rev590",
+        "1.7": "rimworld-1.7.4977-rev1248"
+      },
+      "symbolsByTarget": {
+        "1.6": [
+          "rimworld-1.6.4871-rev590|8ac54fdf0fab257148d68bc744d67609b74554ee72a4f3452e32030eaad009c6|HarmonyLib.Harmony|method|System.Reflection.MethodInfo Patch(System.Reflection.MethodBase, HarmonyLib.HarmonyMethod, HarmonyLib.HarmonyMethod, HarmonyLib.HarmonyMethod, HarmonyLib.HarmonyMethod)",
+          "rimworld-1.6.4871-rev590|8ac54fdf0fab257148d68bc744d67609b74554ee72a4f3452e32030eaad009c6|HarmonyLib.HarmonyMethod|method|Void .ctor()",
+          "rimworld-1.6.4871-rev590|8ac54fdf0fab257148d68bc744d67609b74554ee72a4f3452e32030eaad009c6|HarmonyLib.HarmonyMethod|method|Void .ctor(System.Reflection.MethodInfo)",
+          "rimworld-1.6.4871-rev590|8ac54fdf0fab257148d68bc744d67609b74554ee72a4f3452e32030eaad009c6|HarmonyLib.HarmonyMethod|method|Void .ctor(System.Delegate)",
+          "rimworld-1.6.4871-rev590|8ac54fdf0fab257148d68bc744d67609b74554ee72a4f3452e32030eaad009c6|HarmonyLib.HarmonyMethod|method|Void .ctor(System.Reflection.MethodInfo, Int32, String[], String[], System.Nullable`1<Boolean>)",
+          "rimworld-1.6.4871-rev590|8ac54fdf0fab257148d68bc744d67609b74554ee72a4f3452e32030eaad009c6|HarmonyLib.HarmonyMethod|method|Void .ctor(System.Delegate, Int32, String[], String[], System.Nullable`1<Boolean>)",
+          "rimworld-1.6.4871-rev590|8ac54fdf0fab257148d68bc744d67609b74554ee72a4f3452e32030eaad009c6|HarmonyLib.HarmonyMethod|method|Void .ctor(System.Type, String, System.Type[])"
+        ],
+        "1.7": [
+          "rimworld-1.7.4977-rev1248|94dd929a06f720869f6a718a64bc6713a37dbe153c2f4c16c031b2587d7ee694|HarmonyLib.Harmony|method|System.Reflection.MethodInfo Patch(System.Reflection.MethodBase, HarmonyLib.HarmonyMethod, HarmonyLib.HarmonyMethod, HarmonyLib.HarmonyMethod, HarmonyLib.HarmonyMethod)",
+          "rimworld-1.7.4977-rev1248|94dd929a06f720869f6a718a64bc6713a37dbe153c2f4c16c031b2587d7ee694|HarmonyLib.HarmonyMethod|method|Void .ctor()",
+          "rimworld-1.7.4977-rev1248|94dd929a06f720869f6a718a64bc6713a37dbe153c2f4c16c031b2587d7ee694|HarmonyLib.HarmonyMethod|method|Void .ctor(System.Reflection.MethodInfo)",
+          "rimworld-1.7.4977-rev1248|94dd929a06f720869f6a718a64bc6713a37dbe153c2f4c16c031b2587d7ee694|HarmonyLib.HarmonyMethod|method|Void .ctor(System.Delegate)",
+          "rimworld-1.7.4977-rev1248|94dd929a06f720869f6a718a64bc6713a37dbe153c2f4c16c031b2587d7ee694|HarmonyLib.HarmonyMethod|method|Void .ctor(System.Reflection.MethodInfo, Int32, String[], String[], System.Nullable`1<Boolean>)",
+          "rimworld-1.7.4977-rev1248|94dd929a06f720869f6a718a64bc6713a37dbe153c2f4c16c031b2587d7ee694|HarmonyLib.HarmonyMethod|method|Void .ctor(System.Delegate, Int32, String[], String[], System.Nullable`1<Boolean>)",
+          "rimworld-1.7.4977-rev1248|94dd929a06f720869f6a718a64bc6713a37dbe153c2f4c16c031b2587d7ee694|HarmonyLib.HarmonyMethod|method|Void .ctor(System.Type, String, System.Type[])"
+        ]
+      },
+      "chain": "Verified MethodBase → HarmonyMethod declaration → patch binding → original and modified paths",
+      "conditions": [
+        "Actual provider version/hash",
+        "Exact owner/overload and injected parameter types",
+        "Initialization and repeated triggers"
+      ],
+      "reference": "../references/usage-examples.md",
+      "tests": [
+        "First and repeated use",
+        "Relevant lifecycle/save checks only",
+        "Original path and actual consumer"
+      ],
+      "evidence": {
+        "metadataAnchors": true,
+        "semanticRecipe": "candidate requiring project-specific consumer evidence",
+        "compiled": false,
+        "loaded": false,
+        "triggered": false,
+        "lifecycle": false,
+        "save": false,
+        "visual": false
+      }
+    },
+    {
+      "id": "projectile-weapon",
+      "purpose": "weapon",
+      "profileIds": {
+        "1.6": "rimworld-1.6.4871-rev590",
+        "1.7": "rimworld-1.7.4977-rev1248"
+      },
+      "symbolsByTarget": {
+        "1.6": [
+          "rimworld-1.6.4871-rev590|5cf1b5be399d5b1c9c56ca72c9d35b4ecf307feacf5859d04ac5a1aa5926356a|Verse.VerbProperties|field|System.Type verbClass",
+          "rimworld-1.6.4871-rev590|5cf1b5be399d5b1c9c56ca72c9d35b4ecf307feacf5859d04ac5a1aa5926356a|Verse.VerbProperties|field|Verse.ThingDef defaultProjectile",
+          "rimworld-1.6.4871-rev590|5cf1b5be399d5b1c9c56ca72c9d35b4ecf307feacf5859d04ac5a1aa5926356a|Verse.Verb_LaunchProjectile|method|Boolean TryCastShot()"
+        ],
+        "1.7": [
+          "rimworld-1.7.4977-rev1248|3d4f1ddfe71bd8760cb488255e3bdeac9366f537dc1ef813cc6f8d09824e2da9|Verse.VerbProperties|field|System.Type verbClass",
+          "rimworld-1.7.4977-rev1248|3d4f1ddfe71bd8760cb488255e3bdeac9366f537dc1ef813cc6f8d09824e2da9|Verse.VerbProperties|field|Verse.ThingDef defaultProjectile",
+          "rimworld-1.7.4977-rev1248|3d4f1ddfe71bd8760cb488255e3bdeac9366f537dc1ef813cc6f8d09824e2da9|Verse.Verb_LaunchProjectile|method|Boolean TryCastShot()"
+        ]
+      },
+      "chain": "Ranged intent → firing verb/projectile link → damage and actual use",
+      "conditions": [
+        "Do not infer melee from a knife name",
+        "Check valid template/consumer/acquisition",
+        "Static fields do not prove targeting and projectile behavior"
+      ],
+      "reference": "../references/usage-examples.md",
+      "tests": [
+        "First and repeated use",
+        "Relevant lifecycle/save checks only",
+        "Original path and actual consumer"
+      ],
+      "evidence": {
+        "metadataAnchors": true,
+        "semanticRecipe": "candidate requiring project-specific consumer evidence",
+        "compiled": false,
+        "loaded": false,
+        "triggered": false,
+        "lifecycle": false,
+        "save": false,
+        "visual": false
+      }
+    }
+  ]
+}

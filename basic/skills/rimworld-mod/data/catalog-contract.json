@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "profileRequired": ["schema", "id", "target", "game", "runtime", "layout", "assemblies", "harmony", "coverage", "evidence"],
+  "symbolRequired": ["id", "profileId", "assembly", "type", "kind", "signature", "evidence"],
+  "recipeRequired": ["id", "purpose", "profileIds", "symbolsByTarget", "chain", "conditions", "tests", "evidence"],
+  "assemblyIdentity": ["name", "version", "sha256"],
+  "lookupStates": ["found", "confirmed_absent", "not_covered", "parse_failed", "stale", "ambiguous"],
+  "evidenceLevels": ["metadata", "xml", "source", "compiled", "loaded", "triggered", "lifecycle", "save", "visual", "measured"],
+  "rules": [
+    "Profile ids identify exact builds; target 1.6 or 1.7 alone is not an evidence identity.",
+    "Symbol ids include profile, assembly hash, declaring type, kind and full signature; display names are not unique keys.",
+    "Missing entries in partial coverage mean not_covered, never confirmed_absent.",
+    "Evidence levels are independent claims, not automatic implications.",
+    "Local machine paths, game DLLs and decompiled bodies are excluded from distributed catalogs."
+  ]
+}

@@ -1,0 +1,682 @@
+{
+  "schema": 1,
+  "updated": "2026-10-14",
+  "targetGameVersion": "1.7.4977 rev1248",
+  "advisoryOnly": true,
+  "automaticReplacement": false,
+  "sources": {
+    "game16": {
+      "kind": "metadata",
+      "gameVersion": "1.6.4871 rev590",
+      "assembly": "Assembly-CSharp",
+      "sha256": "5cf1b5be399d5b1c9c56ca72c9d35b4ecf307feacf5859d04ac5a1aa5926356a"
+    },
+    "game17": {
+      "kind": "metadata_and_targeted_reader",
+      "gameVersion": "1.7.4977 rev1248",
+      "assembly": "Assembly-CSharp",
+      "sha256": "3d4f1ddfe71bd8760cb488255e3bdeac9366f537dc1ef813cc6f8d09824e2da9"
+    },
+    "stubs17": {
+      "kind": "metadata_and_targeted_reader",
+      "gameVersion": "1.7.4977 rev1248",
+      "assembly": "UnityStubs",
+      "sha256": "b9e08c6bf72f57fa6f0c09277eadca209a30b157508795072f2dd9f79de655dd"
+    },
+    "harmony17": {
+      "kind": "targeted_reader",
+      "gameVersion": "1.7.4977 rev1248",
+      "assembly": "0Harmony",
+      "assemblyVersion": "3.0.0.0",
+      "sha256": "94dd929a06f720869f6a718a64bc6713a37dbe153c2f4c16c031b2587d7ee694"
+    },
+    "audio16": {
+      "kind": "metadata",
+      "gameVersion": "1.6.4871 rev590",
+      "assembly": "UnityEngine.AudioModule",
+      "sha256": "abc57ac9f40d0b5151c248726549f5470c338bbd03183d5146b61d486512b797"
+    },
+    "collections17": {
+      "kind": "metadata",
+      "gameVersion": "1.7.4977 rev1248",
+      "assembly": "System.Collections",
+      "sha256": "5aafee2b75d8e8758710116fb84beffe237d47723d8ba987f63d0271c728190e"
+    },
+    "handoff4976": {
+      "kind": "historical_runtime_report",
+      "gameVersion": "1.7.4976 rev1043",
+      "source": "Cursor 2026-10-13 findings/handoff; not a 4977 regression",
+      "sha256": null
+    }
+  },
+  "records": [
+    {
+      "id": "RW17-001",
+      "symbol": "UnityEngine.MaterialPropertyBlock.HasVector(int)",
+      "aliases": [
+        "HasVector",
+        "MaterialPropertyBlock.HasVector(Int32)"
+      ],
+      "profiles": [
+        "graphics",
+        "engine"
+      ],
+      "kind": "member_missing",
+      "observed": "当前兼容层存在 MaterialPropertyBlock，但未找到 HasVector(int)；有 TryGetVector(int,out Vector4)，读取向量属性字典。",
+      "direction": "核对旧调用是否只判断向量属性存在；可考虑自有适配方法使用 TryGetVector；在调用方修改引用。",
+      "caveats": [
+        "候选不代表所有 HasVector 语义等价，需查颜色等属性及调用者。",
+        "不能用 GetVector 结果为零判不存在，合法零向量仍是已设置值。",
+        "不要往 UnityStubs 填仿造方法或假定同名扩展能修复旧 DLL 绑定。"
+      ],
+      "tests": [
+        "未设置、已设置零向量、非零向量、实际使用的颜色/其它属性",
+        "相关特效重复触发、切地图及 shader 回退"
+      ],
+      "evidence": [
+        "stubs17"
+      ],
+      "disposition": "investigate",
+      "recipeStatus": "candidate",
+      "runtimeVerifiedOnTarget": false
+    },
+    {
+      "id": "RW17-002",
+      "symbol": "UnityEngine.AudioClip.Create(...,PCMReaderCallback[,PCMSetPositionCallback])",
+      "aliases": [
+        "PCMReaderCallback",
+        "PCMSetPositionCallback",
+        "AudioClip.Create"
+      ],
+      "profiles": [
+        "audio",
+        "engine"
+      ],
+      "kind": "overload_missing",
+      "observed": "当前 AudioClip 有五参数 Create(string,int,int,int,bool)；未找到旧 PCM 回调委托/重载。",
+      "direction": "先判断是否真正依赖流式/程序音频；固定音频可评估 SoundDef/已验证内容加载；依赖回调则调查可用音频能力并重做该块。",
+      "caveats": [
+        "只缺指定重载，不把整个 AudioClip/Create 判为缺失。",
+        "删回调可能直接删掉核心功能；替代音频/删除功能需用户决定。"
+      ],
+      "tests": [
+        "首次播放、循环、停止、seek/回调时机（实际使用时）",
+        "暂停/变速、切地图、重进游戏及资源释放"
+      ],
+      "evidence": [
+        "audio16",
+        "stubs17"
+      ],
+      "disposition": "investigate",
+      "recipeStatus": "candidate",
+      "runtimeVerifiedOnTarget": false
+    },
+    {
+      "id": "RW17-003",
+      "symbol": "UnityEngine.AudioClip.loadType/loadState/LoadAudioData/UnloadAudioData",
+      "aliases": [
+        "AudioClipLoadType",
+        "AudioDataLoadState",
+        "AudioClip.LoadAudioData",
+        "AudioClip.UnloadAudioData",
+        "AudioClip.get_loadState",
+        "AudioClip.get_loadType"
+      ],
+      "profiles": [
+        "audio",
+        "engine"
+      ],
+      "kind": "member_and_type_missing",
+      "observed": "当前声明成员/类型表未找到这些加载状态与控制接口。",
+      "direction": "明确调用是在等待、预热、卸载还是检测错误；查实际内容加载与资源所有权，改为该能力允许的生命周期。",
+      "caveats": [
+        "不能用恒 true/false 或直接删除等待来冒充加载完成。",
+        "不能猜引擎 API 名字；仍缺流式/卸载能力时保留阻塞。"
+      ],
+      "tests": [
+        "冷启动首次播放与连续播放",
+        "资源失败路径、卸载/切换后再播放"
+      ],
+      "evidence": [
+        "audio16",
+        "stubs17"
+      ],
+      "disposition": "investigate",
+      "recipeStatus": "candidate",
+      "runtimeVerifiedOnTarget": false
+    },
+    {
+      "id": "RW17-004",
+      "symbol": "RuntimeAudioClipLoader.Manager / AudioFormat",
+      "aliases": [
+        "RuntimeAudioClipLoader",
+        "RuntimeAudioClipLoader.Manager",
+        "RuntimeAudioClipLoader.AudioFormat"
+      ],
+      "profiles": [
+        "audio",
+        "engine",
+        "library"
+      ],
+      "kind": "type_missing",
+      "observed": "原游戏程序集的这两个公开类型在当前游戏程序集中未找到。",
+      "direction": "调查调用职责；固定资源优先走经确认的游戏内容加载，特殊解码/流式功能重新设计；库同时检查下游。",
+      "caveats": [
+        "不能把缺失 Unity 类型与这个旧第三方加载器混为同一问题。",
+        "不能复制整套旧加载器/Unity DLL 进包来恢复名字。"
+      ],
+      "tests": [
+        "首次/重复加载、异常资源",
+        "音频播放和释放；库的最小消费者"
+      ],
+      "evidence": [
+        "game16",
+        "game17"
+      ],
+      "disposition": "investigate",
+      "recipeStatus": "candidate",
+      "runtimeVerifiedOnTarget": false
+    },
+    {
+      "id": "RW17-005",
+      "symbol": "Verse.LoadedContentItem<T>.extraDisposable / ModContentHolder<T>.extraDisposables",
+      "aliases": [
+        "extraDisposable",
+        "extraDisposables",
+        "ModContentHolder.ClearDestroy"
+      ],
+      "profiles": [
+        "engine",
+        "graphics",
+        "audio",
+        "library"
+      ],
+      "kind": "lifecycle_removed",
+      "observed": "两字段已不在；当前 ClearDestroy 不再执行旧 extraDisposables 遍历 Dispose。",
+      "direction": "为 mod 自有资源明确所有权、保存位置及释放时机；区分引擎资源与自己分配的资源，再选合法生命周期入口。",
+      "caveats": [
+        "不只是删字段引用；遗失 Dispose 可能泄漏。",
+        "不要重复释放引擎管理资源，避免悬空引用。"
+      ],
+      "tests": [
+        "重复打开/关闭、切地图、重载资源",
+        "释放次数、释放后访问及相关内存增长"
+      ],
+      "evidence": [
+        "game16",
+        "game17"
+      ],
+      "disposition": "investigate",
+      "recipeStatus": "candidate",
+      "runtimeVerifiedOnTarget": false
+    },
+    {
+      "id": "RW17-006",
+      "symbol": "Verse.Steam.SteamDeck.IsVR",
+      "aliases": [
+        "SteamDeck.IsVR",
+        "SteamDeck.get_IsVR"
+      ],
+      "profiles": [
+        "ui",
+        "engine"
+      ],
+      "kind": "member_missing",
+      "observed": "旧公开 getter 在当前游戏程序集中未找到。",
+      "direction": "先查这项判断实际控制的 UI/功能；若仍需要能力检测，查真实平台接口；不需要的旧分支按范围确认移除。",
+      "caveats": [
+        "不按方法名猜恒 false 等价；先查两个分支的玩家效果。"
+      ],
+      "tests": [
+        "受控 UI 分支、显示模式与当前实际平台"
+      ],
+      "evidence": [
+        "game16",
+        "game17"
+      ],
+      "disposition": "investigate",
+      "recipeStatus": "candidate",
+      "runtimeVerifiedOnTarget": false
+    },
+    {
+      "id": "RW17-007",
+      "symbol": "Verse.GenCollection.MaxBy / MinBy extension invocation",
+      "aliases": [
+        "MaxBy",
+        "MinBy",
+        "GenCollection.MaxBy",
+        "GenCollection.MinBy"
+      ],
+      "profiles": [
+        "gameplay",
+        "ui",
+        "library"
+      ],
+      "kind": "binding_behavior_changed",
+      "observed": "四个重载仍在，移除了 ExtensionAttribute；不是方法删除。",
+      "direction": "检查实际绑定；需保持 Verse 语义时显式调用 Verse.GenCollection；选择框架实现时回归边界。",
+      "caveats": [
+        "重编后的扩展调用可能改绑 System.Linq。",
+        "空集合/空键行为不能因名字一样而认为相同。"
+      ],
+      "tests": [
+        "空集合、空键、并列极值、实际相关 UI/玩法"
+      ],
+      "evidence": [
+        "game16",
+        "game17"
+      ],
+      "disposition": "investigate",
+      "recipeStatus": "candidate",
+      "runtimeVerifiedOnTarget": false
+    },
+    {
+      "id": "RW17-008",
+      "symbol": "ShaderTypeDef.shaderPath / ShaderDatabase legacy shader lookup",
+      "aliases": [
+        "ShaderTypeDef",
+        "shaderPath",
+        "uiShaderPath",
+        "ShaderDatabase"
+      ],
+      "profiles": [
+        "graphics",
+        "ui"
+      ],
+      "kind": "legacy_bridge_present",
+      "observed": "ShaderTypeDef/旧路径字段仍在；当前加载有 ShaderDef 和 AssetBundle 支路。",
+      "direction": "先查注册名称、实际消费者和资源支路；旧内容有效则保留，自定义新方案按需要使用 ShaderDef/MaterialDef。",
+      "caveats": [
+        "不是所有旧 shader 都需重写。",
+        "路径最后一段参与 Def 名匹配，检查名称相撞和默认 shader 回退。"
+      ],
+      "tests": [
+        "实际特效/界面、透明/遮挡/缩放",
+        "资源失败回退、场景切换和重复显示"
+      ],
+      "evidence": [
+        "game17"
+      ],
+      "disposition": "investigate",
+      "recipeStatus": "candidate",
+      "runtimeVerifiedOnTarget": false
+    },
+    {
+      "id": "RW17-009",
+      "symbol": "Unity.Jobs.DOTSCompilerGeneratedAttribute",
+      "aliases": [
+        "DOTSCompilerGeneratedAttribute"
+      ],
+      "profiles": [
+        "engine",
+        "optimization"
+      ],
+      "kind": "present_not_missing",
+      "observed": "在当前 UnityStubs 类型表中存在；旧交接把它列为缺失。",
+      "direction": "按当前实际程序集与引用查证，不依据旧缺失清单制作 shim。",
+      "caveats": [
+        "类型存在不证明 Job/Burst 执行语义与旧引擎相同。"
+      ],
+      "tests": [
+        "实际依赖类型解析及所用 Job 行为"
+      ],
+      "evidence": [
+        "stubs17"
+      ],
+      "disposition": "investigate",
+      "recipeStatus": "presence_confirmed",
+      "runtimeVerifiedOnTarget": false
+    },
+    {
+      "id": "RW17-010",
+      "symbol": "Burst/native Unity optimization hooks and generated $Burst* methods",
+      "aliases": [
+        "BurstCompiler.get_IsEnabled",
+        "BurstCompiler.IsEnabled",
+        "$BurstManaged",
+        "$BurstDirectCall",
+        "PostfixBurstDelegate"
+      ],
+      "profiles": [
+        "optimization",
+        "engine"
+      ],
+      "kind": "obsolete_optimization_candidate",
+      "observed": "交接与静态差集显示旧 Burst 生成入口撤除，IsEnabled 为 false；需判定 mod 是否依赖该机制。",
+      "direction": "确认原优化依赖已失效机制时，默认终止该优化功能的迁移；说明哪些优化失效并保留独立有效功能。",
+      "caveats": [
+        "不为了恢复旧补丁复制 Burst/Unity 引擎或换一个名字继续 patch。",
+        "全部优化 mod 不自动禁止：依据机制是否失效筛选。",
+        "另做针对 1.7 的优化是新需求，需新计划与实测收益。"
+      ],
+      "tests": [
+        "仅在重新立项时做正确性/线程安全及基线性能测量"
+      ],
+      "evidence": [
+        "game16",
+        "game17",
+        "handoff4976"
+      ],
+      "disposition": "skip_if_mechanism_obsolete",
+      "recipeStatus": "policy_route",
+      "runtimeVerifiedOnTarget": false
+    },
+    {
+      "id": "RW17-011",
+      "symbol": "Harmony ___sections → TransferableOneWayWidget.Section",
+      "aliases": [
+        "TransferableOneWayWidget.sections",
+        "___sections",
+        "CaravanAdventures.Patches.Section"
+      ],
+      "profiles": [
+        "ui",
+        "library",
+        "interfaces"
+      ],
+      "kind": "invalid_binding",
+      "observed": "实际字段为 List<TransferableOneWayWidget.Section>；历史补丁用无关仿造 Section 类型被拒绝。",
+      "direction": "查真实字段及当前 Harmony 合法绑定；改调用/补丁消费方式，不用相同结构的仿类代替。",
+      "caveats": [
+        "不是游戏字段类型变化。",
+        "object/反射不是通用修复；仍查集合元素、ref/赋值及消费。"
+      ],
+      "tests": [
+        "打开商队/转移界面、列表变化、关闭再开",
+        "进地图/世界 tick、上游组合"
+      ],
+      "evidence": [
+        "game16",
+        "game17",
+        "harmony17",
+        "handoff4976"
+      ],
+      "disposition": "investigate",
+      "recipeStatus": "candidate",
+      "runtimeVerifiedOnTarget": false
+    },
+    {
+      "id": "RW17-012",
+      "symbol": "Site.ShouldRemoveMapNow(out bool alsoRemoveWorldObject)",
+      "aliases": [
+        "Site.ShouldRemoveMapNow",
+        "alsoRemoveWorldObject"
+      ],
+      "profiles": [
+        "gameplay",
+        "interfaces"
+      ],
+      "kind": "invalid_binding",
+      "observed": "当前真实参数为 out bool；历史补丁当成 MapParent。",
+      "direction": "按真实签名重新核对参数名、out/ref 与原目标语义，修正当前补丁绑定。",
+      "caveats": [
+        "不能把 out bool 简写成普通值参数后继续猜。"
+      ],
+      "tests": [
+        "站点地图退出/移除和世界对象保留/移除",
+        "相关任务/地图存读档"
+      ],
+      "evidence": [
+        "game17",
+        "harmony17",
+        "handoff4976"
+      ],
+      "disposition": "investigate",
+      "recipeStatus": "candidate",
+      "runtimeVerifiedOnTarget": false
+    },
+    {
+      "id": "RW17-013",
+      "symbol": "Faction.TryAffectGoodwillWith(...,HistoryEventDef reason,...)",
+      "aliases": [
+        "Faction.TryAffectGoodwillWith",
+        "HistoryEventDef reason"
+      ],
+      "profiles": [
+        "gameplay",
+        "interfaces"
+      ],
+      "kind": "invalid_binding",
+      "observed": "reason 实际类型为 HistoryEventDef；历史补丁声明 string。",
+      "direction": "查真实类型、使用的事件 Def 与期望结果，修绑定及消费，不猜字符串到 Def 的映射。",
+      "caveats": [
+        "方法存在，不该为此补造新方法。"
+      ],
+      "tests": [
+        "实际好感变化触发、消息/事件记录及边界"
+      ],
+      "evidence": [
+        "game17",
+        "harmony17",
+        "handoff4976"
+      ],
+      "disposition": "investigate",
+      "recipeStatus": "candidate",
+      "runtimeVerifiedOnTarget": false
+    },
+    {
+      "id": "RW17-014",
+      "symbol": "MainTabsRoot.HandleLowPriorityShortcuts __instance",
+      "aliases": [
+        "MainTabsRoot.HandleLowPriorityShortcuts",
+        "MainButtonWorker",
+        "Dubs Mint Menus"
+      ],
+      "profiles": [
+        "ui",
+        "interfaces"
+      ],
+      "kind": "invalid_binding",
+      "observed": "历史补丁把 MainTabsRoot 实例声明为 MainButtonWorker。",
+      "direction": "核对补丁 owner/instance 的实际类型、合法绑定和消费对象；保留原快捷键语义。",
+      "caveats": [
+        "不能套“全部注入类型完全相同”的概括；按当前绑定规则查。"
+      ],
+      "tests": [
+        "相应页签/快捷键、焦点切换、连续开关界面",
+        "暂停/变速和相关 UI mod 组合"
+      ],
+      "evidence": [
+        "game17",
+        "harmony17",
+        "handoff4976"
+      ],
+      "disposition": "investigate",
+      "recipeStatus": "candidate",
+      "runtimeVerifiedOnTarget": false
+    },
+    {
+      "id": "RW17-015",
+      "symbol": "Compiler-generated FollowAndMeleeAttack patch / InvalidProgramException",
+      "aliases": [
+        "FollowAndMeleeAttack",
+        "InvalidProgramException",
+        "GD3"
+      ],
+      "profiles": [
+        "interfaces",
+        "gameplay"
+      ],
+      "kind": "unstable_patch_target",
+      "observed": "4976 历史运行报告记录生成方法补丁的 InvalidProgramException，4977 未回归。",
+      "direction": "优先稳定行为入口；确需生成方法/IL 耦合时查当前产物、上下文和运行时，不复用旧 token/指令位置。",
+      "caveats": [
+        "历史样本不证明全部匿名方法都不能 patch。",
+        "不能把 catch InvalidProgramException 当作功能修复。"
+      ],
+      "tests": [
+        "补丁安装及实际近战/追击触发",
+        "重复战斗、地图切换与原逻辑一致性"
+      ],
+      "evidence": [
+        "handoff4976"
+      ],
+      "disposition": "investigate",
+      "recipeStatus": "candidate",
+      "runtimeVerifiedOnTarget": false
+    },
+    {
+      "id": "RW17-016",
+      "symbol": "HugsLib.ModBase / SettingHandleConvertible type resolution",
+      "aliases": [
+        "HugsLib.ModBase",
+        "HugsLib.Settings.SettingHandleConvertible",
+        "ReflectionTypeLoadException",
+        "AllowTool"
+      ],
+      "profiles": [
+        "library",
+        "defs",
+        "ui"
+      ],
+      "kind": "type_resolution_failed",
+      "observed": "4976 中文件有类型但运行时解析失败；完整原因未闭合。",
+      "direction": "查实际加载目录、程序集身份/重复文件、依赖加载与 LoaderExceptions，再查上游兼容版及最小消费者。",
+      "caveats": [
+        "磁盘存在类型不等于运行时可解析。",
+        "不自动断言上游删除类型，不能靠改 About 或复制 DLL 解决。"
+      ],
+      "tests": [
+        "依赖类型解析、mod 初始化、设计器/设置/UI 功能",
+        "库的最小消费者和实际下游"
+      ],
+      "evidence": [
+        "handoff4976"
+      ],
+      "disposition": "investigate",
+      "recipeStatus": "diagnostic_route",
+      "runtimeVerifiedOnTarget": false
+    },
+    {
+      "id": "RW17-017",
+      "symbol": "ThingDef.thingClass unresolved / ReadingPolicyDatabase / SameOrSubclassOf",
+      "aliases": [
+        "ThingDef.thingClass",
+        "QING_Traits",
+        "ReadingPolicyDatabase.GenerateStartingPolicies",
+        "GenTypes.SameOrSubclassOf",
+        "49B8C762"
+      ],
+      "profiles": [
+        "defs",
+        "library",
+        "gameplay"
+      ],
+      "kind": "unresolved_definition_type",
+      "observed": "4976 历史报告中 XML 类解析为空，Game 构造扫描类型时失败；程序集为何未进类型表仍未知。",
+      "direction": "回查最早类解析/程序集问题，找到受影响 Def 及提供方，修加载/依赖并检查相关引用。",
+      "caveats": [
+        "不要给后续空引用泛加 null guard 冒充修好内容。",
+        "主菜单与部分正常内容不能证明所有类型都有效。"
+      ],
+      "tests": [
+        "受影响 Class/Def 引用、创建 Game/进地图",
+        "真正获取/使用受影响建筑或功能，旧档中实例"
+      ],
+      "evidence": [
+        "handoff4976"
+      ],
+      "disposition": "investigate",
+      "recipeStatus": "diagnostic_route",
+      "runtimeVerifiedOnTarget": false
+    },
+    {
+      "id": "RW17-018",
+      "symbol": "TypeInitializationException → InitPatches → repeated WorldComponentTick",
+      "aliases": [
+        "TypeInitializationException",
+        "InitPatches",
+        "storyPatchesLoaded",
+        "RoyaltyActiveCheck",
+        "WorldComponentTick"
+      ],
+      "profiles": [
+        "ui",
+        "library",
+        "interfaces",
+        "gameplay"
+      ],
+      "kind": "post_map_error_loop",
+      "observed": "4976 历史报告记录静态初始化失败后每个 world tick 重复触发。",
+      "direction": "定位首次内部异常/补丁失败及反复触发者；在新的进程验证初始化修复和依赖功能，不只清日志。",
+      "caveats": [
+        "一次日志/捕获/禁用触发者只是诊断或用户接受的降级，不是自动完整修复。",
+        "类型初始化失败的会话内结果不能作为新代码干净回归。"
+      ],
+      "tests": [
+        "重新启动后的初始化、进地图/世界 tick",
+        "相关 UI/事件反复触发，保存/读档与切图",
+        "同时间/同触发次数窗口的错误增长及功能结果"
+      ],
+      "evidence": [
+        "handoff4976"
+      ],
+      "disposition": "investigate",
+      "recipeStatus": "diagnostic_route",
+      "runtimeVerifiedOnTarget": false
+    },
+    {
+      "id": "RW17-019",
+      "symbol": "System.Collections.Generic.PriorityQueue<TElement,TPriority> assembly identity",
+      "aliases": [
+        "PriorityQueue",
+        "System.Collections.Generic.PriorityQueue"
+      ],
+      "profiles": [
+        "library",
+        "gameplay",
+        "engine"
+      ],
+      "kind": "type_moved",
+      "observed": "旧类型位于游戏程序集；当前游戏程序集中未找到，System.Collections 有同名公开泛型类型。",
+      "direction": "重编时核对框架引用及实际绑定；检查使用操作、比较器、顺序与持久化/反射依赖，再决定适配。",
+      "caveats": [
+        "同名不等于程序集限定身份、行为和布局都相同。",
+        "不把旧 DLL 或存档反射字符串直接批量替换；旧 DLL 的最终解析需游戏证据。"
+      ],
+      "tests": [
+        "空队列、并列优先级、出入队顺序/比较器",
+        "相关保存/读档及库消费者"
+      ],
+      "evidence": [
+        "game16",
+        "game17",
+        "collections17"
+      ],
+      "disposition": "investigate",
+      "recipeStatus": "candidate",
+      "runtimeVerifiedOnTarget": false
+    },
+    {
+      "id": "RW17-020",
+      "symbol": "Verse.ModAssemblyHandler.globalResolverIsSet",
+      "aliases": [
+        "globalResolverIsSet",
+        "ModAssemblyHandler.globalResolverIsSet"
+      ],
+      "profiles": [
+        "engine",
+        "library",
+        "interfaces"
+      ],
+      "kind": "private_member_missing",
+      "observed": "旧私有标记字段在当前游戏程序集中未找到。",
+      "direction": "查反射/补丁访问的真实目的和目标运行时加载流程；移除旧内部假设或改用查证过的加载/身份方案。",
+      "caveats": [
+        "不为保留旧优化/加载机制重建 Mono resolver 标记。",
+        "若是依旧机制的优化，则进入优化排除；普通库加载需求单独分析。"
+      ],
+      "tests": [
+        "相关程序集/类型解析、重复依赖及初始化",
+        "下游最小消费者和实际功能触发"
+      ],
+      "evidence": [
+        "game16",
+        "game17"
+      ],
+      "disposition": "investigate",
+      "recipeStatus": "candidate",
+      "runtimeVerifiedOnTarget": false
+    }
+  ]
+}

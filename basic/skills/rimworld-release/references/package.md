@@ -2,7 +2,7 @@
 
 按工程版本结构收集 About、LoadFolders、有效版本目录和公共资源。多版本目录按声明验证；不把工具自己的工作目录当 mod 发行目录。
 
-构建记录必须与当前源码和编译引用对应，产物校验值匹配。不要误带 mscorlib、Assembly-CSharp、UnityEngine、0Harmony 或未授权上游 DLL。
+包内每个支持目标分别核对有效源码/条件符号、框架与引用、当前产物记录/校验值；1.7 成功不能证明 1.6 产物有效。保留旧 DLL 记录其来源和验证，不能冒充新编译。不要误带仅用于编译的 mscorlib、Assembly-CSharp、UnityEngine/UnityStubs、Waylith、0Harmony、系统参考或未授权上游 DLL。
 
 核对独立安装所需文件、资源引用、版本/依赖与许可、用户说明、必要存档/行为测试。只在相关证据存在时标加载或行为通过。
 

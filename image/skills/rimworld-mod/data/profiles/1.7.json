@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "id": "rimworld-1.7.4977-rev1248",
+  "target": "1.7",
+  "game": {
+    "version": "1.7.4977",
+    "revision": "1248",
+    "versionText": "1.7.4977 rev1248"
+  },
+  "runtime": {
+    "family": "WaylithCLR",
+    "tfm": "net10.0",
+    "framework": {
+      "name": "Microsoft.NETCore.App",
+      "version": "10.0.10-waylithclr.dev"
+    },
+    "assemblyRedirects": "UnityEngine*=UnityStubs;Unity.Newtonsoft.Json=;Unity.*=UnityStubs;Assembly-CSharp-firstpass=UnityStubs",
+    "evidence": "RimWorld.runtimeconfig.json; not runtime verified"
+  },
+  "layout": {
+    "gameAssemblies": ".",
+    "data": "Data",
+    "executable": "RimWorld.exe",
+    "runtimeConfig": "RimWorld.runtimeconfig.json",
+    "logs": [
+      "Logs/Player.log",
+      "Player.log"
+    ],
+    "logSelection": "Select actual session version; historical root log is only fallback"
+  },
+  "assemblies": [
+    {
+      "name": "Assembly-CSharp",
+      "version": "1.7.9782.37458",
+      "sha256": "3d4f1ddfe71bd8760cb488255e3bdeac9366f537dc1ef813cc6f8d09824e2da9",
+      "relativePath": "Assembly-CSharp.dll",
+      "origin": "game"
+    },
+    {
+      "name": "UnityStubs",
+      "version": "1.0.0.0",
+      "sha256": "b9e08c6bf72f57fa6f0c09277eadca209a30b157508795072f2dd9f79de655dd",
+      "relativePath": "UnityStubs.dll",
+      "origin": "game"
+    },
+    {
+      "name": "0Harmony",
+      "version": "3.0.0.0",
+      "sha256": "94dd929a06f720869f6a718a64bc6713a37dbe153c2f4c16c031b2587d7ee694",
+      "relativePath": "1.7/Assemblies/0Harmony.dll",
+      "origin": "harmony"
+    }
+  ],
+  "harmony": {
+    "packageId": "brrainz.harmony",
+    "version": "3.0.0.0",
+    "sha256": "94dd929a06f720869f6a718a64bc6713a37dbe153c2f4c16c031b2587d7ee694",
+    "loadFolder": "1.7",
+    "selectionEvidence": "LoadFolders.xml v1.7 includes root and 1.7",
+    "runtimeLoaded": false,
+    "note": "Installed provider snapshot; project may choose another provider. About version is not DLL version."
+  },
+  "coverage": {
+    "kind": "selected_declared_metadata",
+    "catalog": "../api/1.7.json",
+    "notCovered": [
+      "all other types/assemblies",
+      "inherited members",
+      "generic constraints",
+      "parameter default values",
+      "XML effective values",
+      "method semantics",
+      "loaded mods and runtime behavior"
+    ]
+  },
+  "evidence": [
+    {
+      "level": "metadata",
+      "source": "Version.txt, PE metadata, LoadFolders.xml, RimWorld.runtimeconfig.json",
+      "observedDate": "2026-10-14",
+      "runtimeVerified": false
+    }
+  ]
+}

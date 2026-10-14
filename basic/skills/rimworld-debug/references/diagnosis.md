@@ -1,8 +1,10 @@
 # 诊断证据
 
-Player.log 通常在 `%USERPROFILE%/AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/`。记录启动时间、游戏/mod 版本与当前 DLL；日志会覆盖或截断，用快照绑定会话。
+Windows 1.6 的 Player.log 通常在 `%USERPROFILE%/AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/`，1.7 的候选为其 `Logs/Player.log`。核对实际会话版本/时间，不能因旧文件仍存在就用于新构建。记录游戏/mod 版本与当前 DLL，日志会覆盖或截断，用快照绑定会话。
 
 先找首次异常与完整栈，再汇总 `[Ref ...] Duplicate stacktrace` 和重复频率。只按关键词筛选可能漏掉缺依赖/跨引用。基线已有错误若频率增加或路径改变仍需调查。
+
+1.7 接口缺失先查 [兼容方案](migration-1.7.md)，1.6 只查其目标来源；菜单/地图后才发生的循环或静默失效按 [功能触发诊断](post-map-debug.md) 追入口、初始化与生命周期；未触发功能不能判通过。
 
 `tools/mod.ps1 log` 是启发式错误提取，不是 Unity 严重程度解析器。输出未发现候选错误只表示该扫描未命中，不证明加载或运行通过。只有错误定位任务才选与表现相关的范围。
 

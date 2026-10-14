@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "skills": [
+    {"name": "rimworld-help", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod", "rimworld-debug"]},
+    {"name": "rimworld-setup", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod"]},
+    {"name": "rimworld-mod", "targets": ["1.6", "1.7"], "requires": ["rimworld-debug"]},
+    {"name": "rimworld-debug", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod"]},
+    {"name": "rimworld-release", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod", "rimworld-debug"]},
+    {"name": "rimworld-16-mod", "targets": ["1.6"], "requires": ["rimworld-mod", "rimworld-debug"]},
+    {"name": "rimworld-16-debug", "targets": ["1.6"], "requires": ["rimworld-mod", "rimworld-debug"]},
+    {"name": "rimworld-17-mod", "targets": ["1.7"], "requires": ["rimworld-mod", "rimworld-debug"]},
+    {"name": "rimworld-17-debug", "targets": ["1.7"], "requires": ["rimworld-mod", "rimworld-debug"]},
+    {"name": "rimworld-17-migrate", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod", "rimworld-debug"]}
+  ],
+  "imageOnly": ["rimworld-mod/references/image-pipeline.md"]
+}
