@@ -4,7 +4,7 @@
 
 核心顺序是：**先确认用途与真实类型，再查模板和默认值；真正未定的玩法数值与资源才交给玩家或 CLI 决定。**
 
-当前版本：**1.2.0**。支持按 1.6 / 1.7 分流制作、排错和迁移，并在重做前确认交付与验收边界。技能内容包含 AI 辅助编写；静态检查、编译成功和游戏内验证分别记录，不能保证所有客户端、游戏修订版和 mod 组合都已验证。
+当前版本：**1.2.1**。支持按 1.6 / 1.7 分流制作、排错和迁移，并在重做前确认交付与验收边界。技能内容包含 AI 辅助编写；静态检查、编译成功和游戏内验证分别记录，不能保证所有客户端、游戏修订版和 mod 组合都已验证。
 
 ## 选择 Basic 或 Image
 
@@ -128,6 +128,21 @@ Cursor 也支持项目级 `.agents/skills/` 与 `.cursor/skills/`。两客户端
 
 已给定的合法 `0`/`false` 不算缺项；已满足目标的继承/默认不用重复填。字段常见不等于必填，少见不等于无效。“数值你定”也不自动代替整个计划确认。
 
+### 迁移必须带上原内容
+
+迁移先冻结旧版内容基线，再为1.7落实原有Def、补丁、语言与资源的实体副本或有效共享；只改About和编译DLL不算内容迁移完成。已有共享根无需机械搬动，但必须证明目标版本实际选择了它。
+
+LoadFolders写内容根，如`1.7`，游戏会在其下找`Defs`等目录；写`1.6/Defs`会找`1.6/Defs/Defs`。显式分支不自动补根/Common。开发期链接不等于可移植发行文件，最终包需实体内容及逐版核对。
+
+技能附带`rimworld-debug/scripts/content_load.py`，可在项目中保存旧版审计并对照新版本：
+
+```text
+python <当前rimworld-debug目录>/scripts/content_load.py check --root <mod根> --target 1.6 --out <mod根>/.local/content-before.json
+python <当前rimworld-debug目录>/scripts/content_load.py check --root <mod根> --target 1.7 --baseline-file <mod根>/.local/content-before.json
+```
+
+它检查磁盘内容根、角色文件、命名Def差集和链接风险；条件组合、Assets.zip/ContentPacks、XML补丁执行与游戏行为分别留未验证，不能把静态通过当成已可玩。纯系统mod可以无Def，检查保留的是原功能所需内容。
+
 ### 六种制作范围
 
 | 范围 | 允许的主要工作 |
@@ -165,7 +180,7 @@ Cursor 也支持项目级 `.agents/skills/` 与 `.cursor/skills/`。两客户端
 
 ## English quick start
 
-RimWorld ModDev Skill is a workflow for agents that support Agent Skills. Version **1.2.0** adds explicit 1.6/1.7 development, debugging and migration routes, bounded metadata queries, and agreed acceptance criteria for rewrites.
+RimWorld ModDev Skill is a workflow for agents that support Agent Skills. Version **1.2.1** adds explicit 1.6/1.7 development, debugging and migration routes, bounded metadata queries, and agreed acceptance criteria for rewrites.
 
 Choose **Basic** for supplied or reused assets, or **Image** for a workflow that includes image generation. Enable one variant only. Image generation requires an actual tool or a configured, supported provider; the skill does not supply the service.
 
