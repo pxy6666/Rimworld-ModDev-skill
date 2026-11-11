@@ -4,7 +4,7 @@
 
 核心顺序是：**先确认用途与真实类型，再查模板和默认值；真正未定的玩法数值与资源才交给玩家或 CLI 决定。**
 
-当前版本：**1.2.1**。支持按 1.6 / 1.7 分流制作、排错和迁移，并在重做前确认交付与验收边界。技能内容包含 AI 辅助编写；静态检查、编译成功和游戏内验证分别记录，不能保证所有客户端、游戏修订版和 mod 组合都已验证。
+当前版本：**1.3.0**。支持按 1.6 / 1.7 分流制作、排错和迁移，并在重做前确认交付与验收边界。此次增加批量图形工作流和本机版本查证。技能内容包含 AI 辅助编写；静态检查、编译成功和游戏内验证分别记录。
 
 ## 选择 Basic 或 Image
 
@@ -164,11 +164,13 @@ python <当前rimworld-debug目录>/scripts/content_load.py check --root <mod根
 
 ## 工具与资源准备
 
+批量换款、多方向或需要地图图和菜单图标配套时，由资源分支进入 [GFX 专项流程](basic/skills/rimworld-mod/references/gfx-workflow.md)。记录已认可样稿与需保留的部位，再按实际消费者核对款式、方向和文件映射。分开记录工程绑定、本机同步和实机显示。Basic 可处理已有素材；Image 需要生图时沿用图像管线。两版仍从原制作入口调用，无须额外安装一个 GFX 技能。
+
 按任务使用 [RimSage](https://github.com/realloon/RimSage)、[RimSearcher](https://github.com/kearril/RimSearcher)、[DecompilerServer](https://github.com/pardeike/DecompilerServer) 或已有检索工具，不要求同时安装全部能力。原始 XML、源码/DLL 和运行时 Def 各回答不同问题；MCP 不可用或版本不匹配时记录回退原因及剩余缺口。
 
 游戏路径与相关程序集由使用方提供；C# 任务才准备适合目标游戏/上游的构建环境。贴图、声音和文本只请求本功能真正需要的部分，允许经确认的原版/上游运行时资源引用。Image 来源偏好可记录在项目中，实际能否生成还要检查当前工具。
 
-包内带两版精确画像、精选接口目录、首批用法/原创样例和兼容方向，可用当前 `rimworld-mod/scripts/catalog.py` 的 profile/query/recipes/verify 做限量查询；迁移方向由 `rimworld-debug/scripts/compatibility.py` 查询。需要可用 Python，缺少时采用有关本地证据。画像基线为1.6.4871 rev590与1.7.4977 rev1248，共7,571条精选声明符号，**不是全部API语义或游戏通过证明**；查不到不等于接口删除，换修订版需核对来源。
+需要查当前安装时，按 [本地批量查证](basic/skills/rimworld-mod/references/local-lookup.md) 查询 Def、父模板、类型、成员和静态引用。XML 查询只需 Python；首次构建 DLL 索引才需可用 .NET SDK，需要方法体时才按构建缓存反编译结果。缓存保存在本机。精选 `catalog.py` 仍可用于已记录的构建基线，迁移方向由 `compatibility.py` 查询。查不到不等于接口删除，静态资料不代替游戏实测。
 
 **此仓库分发技能、查询脚本与必要精选资料，不含游戏文件、反编译正文、编译器、工程 CLI、原始研究报告/统计数据库、日志、本机配置或密钥。** 提到的工程 `tools/preflight.ps1`、`tools/mod.ps1`、统计查询或资源导入助手，只有目标工程实际提供时才使用；没有就采用真实可用的查询、构建和文件工具，不运行缺失脚本。
 
@@ -180,7 +182,7 @@ python <当前rimworld-debug目录>/scripts/content_load.py check --root <mod根
 
 ## English quick start
 
-RimWorld ModDev Skill is a workflow for agents that support Agent Skills. Version **1.2.1** adds explicit 1.6/1.7 development, debugging and migration routes, bounded metadata queries, and agreed acceptance criteria for rewrites.
+RimWorld ModDev Skill is a workflow for agents that support Agent Skills. Version **1.3.0** adds a batch graphics workflow and local, build-aware lookups to the existing 1.6/1.7 development, debugging and migration routes.
 
 Choose **Basic** for supplied or reused assets, or **Image** for a workflow that includes image generation. Enable one variant only. Image generation requires an actual tool or a configured, supported provider; the skill does not supply the service.
 

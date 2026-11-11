@@ -24,6 +24,7 @@ description: 检查并按任务准备 RimWorld mod 开发环境，适用于首�
 
 - 使用基于 Python 3.11+ 的示例工程 CLI 时才需相应 Python；不是 RimWorld 引擎或所有技能任务的要求。PowerShell/pwsh 是否需要取决于所用脚本，不为纯 XML 制作强装全部运行时。
 - .NET SDK 用于 C# 构建；特定查询工具的 .NET runtime 要按其版本核对，不能当作 mod DLL 的目标环境。
+- [本地查证](../rimworld-mod/references/local-lookup.md)：XML 查询只需 Python；DLL 元数据用已有 SDK，源码缓存才需 ILSpy。先从已知工具工作区或 PATH 复用；安装须在任务授权内，不把下载或反编译当常规前置。
 - RimSage 在线、RimSearcher 运行时数据、DecompilerServer 程序/MCP、RiMCP 索引是不同能力。按问题准备，不规定它们必须同时在线。
 - 本机路径采用目标工程本地配置，例如 config/mod.local.json、config/toolchain.local.json，不混入共享身份/构建配置；先读实际格式，技能包不提供这些文件。不保存密钥或复制客户端整份配置到日志。
 - 需要生图才检查图像能力；来源偏好可用 config/resources.local.json，详见 [图像来源流程](../rimworld-mod/references/image-pipeline.md)。分别确认当前工具可调用、所需编辑/透明能力与实际产物，不把“ChatGPT 桌面端”或配置存在当作可用证明；无图像工具不阻止 XML/C# 工作。setup 不为检查连接自行发起收费生图。

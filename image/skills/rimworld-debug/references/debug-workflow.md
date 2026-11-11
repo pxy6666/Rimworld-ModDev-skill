@@ -14,4 +14,4 @@
 
 关键源码/上游或能力不足时保留缺口，其余工作继续。MCP 本身不可用进入 setup 检查有关能力，不安装所有工具。目标工程提供 mod.ps1 时可使用 doctor/check/build/log，否则采用原工程方式；日志与构建绑定实际目标，不启动游戏或改配置来替用户完成未授权动作。
 
-新玩法、依赖、资源或重大取舍回 [制作计划](../../rimworld-mod/references/workflow.md) 的变更部分；不循环调用入口或重新询问既有选择。保留身份或明确序列化迁移；性能结论要有测量。多个独立调查/修复块按 [并行分工](../../rimworld-mod/references/parallel-work.md) 主动评估子 agent，最终合并与验收统一协调。
+新玩法、依赖、资源或重大取舍回 [制作计划](../../rimworld-mod/references/workflow.md) 的变更部分；不循环调用入口或重新询问既有选择。任务或事件链停住、且没有超时或对象缺失等第二条出路时，按 [任务、事件与预设地图](../../rimworld-mod/references/quest-chain.md) 判断能否靠设计收尾；已接取的旧任务不能靠后加的信号自己恢复。预设地图生成失败同样不能靠那个等待信号自己重来。保留身份或明确序列化迁移；性能结论要有测量。多个独立调查/修复块按 [并行分工](../../rimworld-mod/references/parallel-work.md) 主动评估子 agent，最终合并与验收统一协调。

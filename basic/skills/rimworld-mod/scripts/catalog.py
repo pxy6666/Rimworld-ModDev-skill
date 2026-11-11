@@ -127,6 +127,7 @@ def query(profile, catalog, *, type_name=None, symbol=None, purpose=None,
             'mode': 'selection' if selection else 'browse',
             'matchCount': len(matches), 'truncated': len(matches) > limit,
             'symbols': matches[:limit],
+            'next': 'Use lookup.py type/member against the actual game root and target (see references/local-lookup.md).' if not matches else None,
             'note': 'Metadata declarations only. Visibility is not an extension contract or XML-valid-field proof. Partial coverage: no match does not prove absence; inspect inherited members and missing assemblies separately. Defaults/constraints and runtime behavior are not captured.'}
 
 
@@ -179,6 +180,7 @@ def query_recipes(profile, recipes, *, purpose=None, recipe_id=None, limit=5):
         selected.append(item)
     return {'state': 'found' if matches else 'not_covered', 'profileId': profile['id'],
             'matchCount': len(matches), 'truncated': len(matches) > limit, 'recipes': selected,
+            'next': 'Use references/mechanics.md and lookup.py def/type/member against the current installation.' if not matches else None,
             'note': 'Selected candidate recipes with checked metadata anchors. Recipe evidence is unchanged: metadata linkage does not prove compilation or consumer/runtime behavior.'}
 
 
