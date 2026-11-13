@@ -1,0 +1,15 @@
+{
+  "name": "rimworld-moddev-basic",
+  "displayName": "RimWorld ModDev (Basic)",
+  "version": "1.3.0",
+  "description": "RimWorld 1.6/1.7 制作、排错、迁移与重做验收技能，含十个共享流程入口，不含平台生图。与 Image 版技能同名，只安装其中一版。",
+  "author": {
+    "name": "pxy6666"
+  },
+  "repository": "https://github.com/pxy6666/Rimworld-ModDev-skill",
+  "suggestedPrompts": [
+    "请使用 rimworld-help。我要为 RimWorld 1.6 制作一个独立 mod，先检查当前工程与所需环境",
+    "请使用 rimworld-16-mod，制作一把可以直接远程投掷的吸血飞刀，贴图复用原版，先给我计划",
+    "请使用 rimworld-17-migrate，为已有 1.6 mod 增加 1.7 支持"
+  ]
+}
