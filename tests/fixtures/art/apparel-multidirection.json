@@ -1,0 +1,96 @@
+{
+  "scope": "Offline fixture renderer; original test pixels and authored test transforms, not captures or default values from RimWorld.",
+  "consumer": {"worn_graphic": "FixturePack", "body_type": "fixture-adult", "mode": "pack"},
+  "template": {"canvas": [8, 8], "origin": [2, 3]},
+  "palette": {".": [0, 0, 0, 0], "B": [30, 65, 110, 255], "A": [220, 75, 35, 255]},
+  "assets": {
+    ".local/art-references/fixture-adult/body_south.png": {
+      "sha256": "0deaf0a11ef5163a15011d2a4956dc43a355937e8c1f6930be9c42dd59871c57",
+      "png_base64": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAHElEQVR4nGNgoCqQc8z7D8J4JXEqIqiAoBVkAwAPDRWRxduQYgAAAABJRU5ErkJggg=="
+    },
+    ".local/art-references/fixture-adult/body_east.png": {
+      "sha256": "d7573eb7ef50a32c5cb9eb5583e80f90435f5bc7b5dcec27aac8b51eb1ae9117",
+      "png_base64": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGklEQVR4nGNgoCqQc8z7D8LkKYBJkq+AbAAA1kgR+TlB/B0AAAAASUVORK5CYII="
+    },
+    ".local/art-references/fixture-adult/body_north.png": {
+      "sha256": "ade9495d5cf48559ffcc79ac9b5255920e27046bdbce6a2b7227e96266f9c9ed",
+      "png_base64": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGklEQVR4nGNgoBqQc8z7j4xpoABZEfUcDgIAmJ8ZKT3YLkwAAAAASUVORK5CYII="
+    },
+    "Textures/Things/Apparel/FixturePack_south.png": {
+      "origin": [2, 3],
+      "sha256": "dc10395e3f2888539b8c3e5887efa21325f394d573b0e5eb9316671f41a73227",
+      "png_base64": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFklEQVR4nGNgoC+44638H4TpbC1BAACnlgSTADNhUgAAAABJRU5ErkJggg=="
+    },
+    "Textures/Things/Apparel/FixturePack_east.png": {
+      "origin": [2, 3],
+      "sha256": "b8adbdc7c02e058d9651fbf7572c0cbd7f477acfdd9be3010e95315fd9c54f0f",
+      "png_base64": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFElEQVR4nGNgoC+44638nzIFtAEAZVEEkxe/NbsAAAAASUVORK5CYII="
+    },
+    "Textures/Things/Apparel/FixturePack_north.png": {
+      "origin": [2, 3],
+      "sha256": "ace0e8fcd482f4ada5384431ea8fc1bc535a0aa99a79991990c3af109629a74d",
+      "png_base64": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFElEQVR4nGNgoC+44638nzqKqAsAXC0Ek/dR8xYAAAAASUVORK5CYII="
+    }
+  },
+  "renderer": {
+    "south": {"worn_offset": [-1, 1], "node_offset": [1, 0], "scale": 1, "layer_rank": {"body": 0, "apparel": 2}},
+    "east": {"worn_offset": [-1, -1], "node_offset": [0, 1], "scale": 2, "layer_rank": {"body": 0, "apparel": 1}},
+    "north": {"worn_offset": [2, 0], "node_offset": [0, -1], "scale": 1, "layer_rank": {"body": 0, "apparel": -1}}
+  },
+  "directions": {
+    "south": {
+      "body": ".local/art-references/fixture-adult/body_south.png",
+      "export": "Textures/Things/Apparel/FixturePack_south.png",
+      "export_opaque_xy": [[3, 3], [4, 3]],
+      "preview": {
+        "canvas": [8, 8],
+        "origin": [2, 3],
+        "apparel": {
+          "path": "Textures/Things/Apparel/FixturePack_south.png",
+          "sha256": "dc10395e3f2888539b8c3e5887efa21325f394d573b0e5eb9316671f41a73227"
+        }
+      },
+      "expected_preview": {
+        "back_to_front": ["body", "apparel"],
+        "apparel_opaque_xy": [[3, 4], [4, 4]],
+        "rows": ["........", "........", "...BB...", "..BBBB..", "..BAAB..", "...BB...", "........", "........"]
+      }
+    },
+    "east": {
+      "body": ".local/art-references/fixture-adult/body_east.png",
+      "export": "Textures/Things/Apparel/FixturePack_east.png",
+      "export_opaque_xy": [[3, 3], [3, 4]],
+      "preview": {
+        "canvas": [8, 8],
+        "origin": [2, 3],
+        "apparel": {
+          "path": "Textures/Things/Apparel/FixturePack_east.png",
+          "sha256": "b8adbdc7c02e058d9651fbf7572c0cbd7f477acfdd9be3010e95315fd9c54f0f"
+        }
+      },
+      "expected_preview": {
+        "back_to_front": ["body", "apparel"],
+        "apparel_opaque_xy": [[3, 3], [4, 3], [3, 4], [4, 4], [3, 5], [4, 5], [3, 6], [4, 6]],
+        "rows": ["........", "........", "...BB...", "...AA...", "..BAA...", "..BAA...", "...AA...", "........"]
+      }
+    },
+    "north": {
+      "body": ".local/art-references/fixture-adult/body_north.png",
+      "export": "Textures/Things/Apparel/FixturePack_north.png",
+      "export_opaque_xy": [[3, 3], [4, 4]],
+      "preview": {
+        "canvas": [8, 8],
+        "origin": [2, 3],
+        "apparel": {
+          "path": "Textures/Things/Apparel/FixturePack_north.png",
+          "sha256": "ace0e8fcd482f4ada5384431ea8fc1bc535a0aa99a79991990c3af109629a74d"
+        }
+      },
+      "expected_preview": {
+        "back_to_front": ["apparel", "body"],
+        "apparel_opaque_xy": [[5, 2], [6, 3]],
+        "rows": ["........", "........", "..BBBB..", "..BBBBA.", "..BBBB..", "...BB...", "........", "........"]
+      }
+    }
+  }
+}

@@ -47,7 +47,9 @@ def within(root, path):
 def bundled_skills():
     distribution = Path(__file__).resolve().parents[1]
     source = distribution / 'skills'
-    return source if (source / 'catalog.json').is_file() else distribution / 'basic/skills'
+    if not (source / 'catalog.json').is_file():
+        raise FileNotFoundError(f'Bundled skills catalog missing: {source / "catalog.json"}')
+    return source
 
 def config(root, target=None):
     cfg = dict(schema=1, version='1.6', assemblyName='Mod', sourceDir='Source', languageVersion='7.3', references=[],

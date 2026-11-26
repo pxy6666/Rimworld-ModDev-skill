@@ -1,7 +1,0 @@
-{
-  "name": "rimworld-moddev-image",
-  "version": "1.5.1",
-  "description": "RimWorld 1.6/1.7 mod 开发技能，含按需生图分支。",
-  "author": {"name": "pxy6666"},
-  "repository": "https://github.com/pxy6666/Rimworld-ModDev-skill"
-}

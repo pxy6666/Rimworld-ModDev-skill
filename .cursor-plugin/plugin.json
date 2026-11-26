@@ -1,0 +1,17 @@
+{
+  "name": "rimworld-moddev",
+  "version": "2.1.0",
+  "description": "RimWorld 1.6/1.7 mod development skills plus independent rimworld-art and rimworld-sound workflows.",
+  "author": {
+    "name": "pxy6666"
+  },
+  "repository": "https://github.com/pxy6666/Rimworld-ModDev-skill",
+  "keywords": [
+    "rimworld",
+    "mod",
+    "skills",
+    "art",
+    "sound"
+  ],
+  "skills": "./skills/"
+}

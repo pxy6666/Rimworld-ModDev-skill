@@ -1,0 +1,23 @@
+{
+  "name": "rimworld-moddev",
+  "displayName": "RimWorld ModDev",
+  "version": "2.1.0",
+  "description": "RimWorld 1.6/1.7 mod development skills plus independent rimworld-art and rimworld-sound workflows.",
+  "author": {
+    "name": "pxy6666"
+  },
+  "repository": "https://github.com/pxy6666/Rimworld-ModDev-skill",
+  "suggestedPrompts": [
+    "请使用 rimworld-help。我要为 RimWorld 1.6 制作一个独立 mod，先检查当前工程与所需环境",
+    "请使用 rimworld-16-mod，制作一把可以直接远程投掷的吸血飞刀，先给我计划",
+    "请使用 rimworld-art，为一件殖民者服装制作或调整贴图风格",
+    "请使用 rimworld-sound，为无人机起飞、巡航和落地制作连续音效"
+  ],
+  "keywords": [
+    "rimworld",
+    "mod",
+    "skills",
+    "art",
+    "sound"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "skills": [
+    {"name": "rimworld-help", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod", "rimworld-debug", "rimworld-release", "rimworld-publish", "rimworld-art", "rimworld-sound"]},
+    {"name": "rimworld-setup", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod"]},
+    {"name": "rimworld-mod", "targets": ["1.6", "1.7"], "requires": ["rimworld-debug"]},
+    {"name": "rimworld-debug", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod"]},
+    {"name": "rimworld-release", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod", "rimworld-debug", "rimworld-publish"]},
+    {"name": "rimworld-publish", "targets": ["1.6", "1.7"], "requires": ["rimworld-release"]},
+    {"name": "rimworld-16-mod", "targets": ["1.6"], "requires": ["rimworld-mod", "rimworld-debug"]},
+    {"name": "rimworld-16-debug", "targets": ["1.6"], "requires": ["rimworld-mod", "rimworld-debug"]},
+    {"name": "rimworld-17-mod", "targets": ["1.7"], "requires": ["rimworld-mod", "rimworld-debug"]},
+    {"name": "rimworld-17-debug", "targets": ["1.7"], "requires": ["rimworld-mod", "rimworld-debug"]},
+    {"name": "rimworld-17-migrate", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod", "rimworld-debug"]},
+    {"name": "rimworld-art", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod", "rimworld-debug"]},
+    {"name": "rimworld-sound", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod", "rimworld-debug"]}
+  ]
+}
