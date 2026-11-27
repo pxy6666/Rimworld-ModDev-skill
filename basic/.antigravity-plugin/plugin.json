@@ -1,8 +1,8 @@
 {
   "name": "rimworld-moddev-basic",
   "displayName": "RimWorld ModDev (Basic)",
-  "version": "1.5.1",
-  "description": "RimWorld 1.6/1.7 制作、排错、迁移与重做验收技能，含十个共享流程入口，不含平台生图。与 Image 版技能同名，只安装其中一版。",
+  "version": "1.6.0",
+  "description": "RimWorld 1.6/1.7 制作、排错、迁移与重做验收技能，含剧情设计、任务实现和地图制作，不含平台生图。与 Image 版技能同名，只安装其中一版。",
   "author": {
     "name": "pxy6666"
   },

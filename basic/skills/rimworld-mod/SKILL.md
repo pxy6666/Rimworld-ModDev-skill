@@ -1,11 +1,13 @@
 ---
 name: rimworld-mod
-description: 在版本未确定、需要双版本制作或沿用旧名称时组织 RimWorld mod 制作；明确单版目标优先对应版本制作入口。
+description: 组织 RimWorld mod 制作。按版本分流，并从需求判断是否需要剧情构思、任务事件实现或地图场景制作。适用于含这些内容的整体 mod、未指定版本或双版本任务。
 ---
 
 # RimWorld 制作路由
 
 恢复 [项目记录](references/project-state.md)，先确定目标版本，不从当前安装推断。既有具体方案同意与参数模式沿用。
+
+从用户描述识别剧情、任务、事件和地图场景。在计划或常规取证前按 [专项入口](references/quest-chain.md) 选择并读取当前块的技能。用户未点名也按需求分流，已知版本与专项结果一起交给版本流程。
 
 - 1.6：读 [1.6 制作](../rimworld-16-mod/SKILL.md)。
 - 1.7：读 [1.7 制作](../rimworld-17-mod/SKILL.md)。

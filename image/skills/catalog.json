@@ -1,9 +1,12 @@
 {
   "schema": 1,
   "skills": [
-    {"name": "rimworld-help", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod", "rimworld-debug", "rimworld-release", "rimworld-publish"]},
+    {"name": "rimworld-help", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod", "rimworld-debug", "rimworld-release", "rimworld-publish", "rimworld-story-design", "rimworld-quest-build", "rimworld-map-build"]},
     {"name": "rimworld-setup", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod"]},
-    {"name": "rimworld-mod", "targets": ["1.6", "1.7"], "requires": ["rimworld-debug"]},
+    {"name": "rimworld-mod", "targets": ["1.6", "1.7"], "requires": ["rimworld-debug", "rimworld-story-design", "rimworld-quest-build", "rimworld-map-build"]},
+    {"name": "rimworld-story-design", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod"]},
+    {"name": "rimworld-quest-build", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod", "rimworld-map-build"]},
+    {"name": "rimworld-map-build", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod", "rimworld-quest-build"]},
     {"name": "rimworld-debug", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod"]},
     {"name": "rimworld-release", "targets": ["1.6", "1.7"], "requires": ["rimworld-mod", "rimworld-debug", "rimworld-publish"]},
     {"name": "rimworld-publish", "targets": ["1.6", "1.7"], "requires": ["rimworld-release"]},

@@ -2,7 +2,7 @@
   "name": "rimworld-moddev-skill",
   "description": "RimWorld 1.6/1.7 mod 开发技能。只安装 Basic 或 Image 其中一版。",
   "plugins": [
-    {"name": "rimworld-moddev-basic", "source": "./basic", "version": "1.5.1", "category": "developer-tools"},
-    {"name": "rimworld-moddev-image", "source": "./image", "version": "1.5.1", "category": "developer-tools"}
+    {"name": "rimworld-moddev-basic", "source": "./basic", "version": "1.6.0", "category": "developer-tools"},
+    {"name": "rimworld-moddev-image", "source": "./image", "version": "1.6.0", "category": "developer-tools"}
   ]
 }

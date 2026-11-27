@@ -1,11 +1,13 @@
 ---
 name: rimworld-16-mod
-description: 制作或修改明确面向 RimWorld 1.6 的 mod：Def、C#、系统/界面或上游整合，使用 1.6 配置与接口证据。
+description: 制作或修改面向 RimWorld 1.6 的 mod。覆盖 Def、C#、剧情任务、事件、地图场景、系统界面与上游整合，使用 1.6 证据。
 ---
 
 # RimWorld 1.6 制作
 
 先恢复 [检查点](../rimworld-mod/references/project-state.md)，锁定用户目标 1.6 和工程身份。目标改变时返回相应分支，不套用示例配置。
+
+需求涉及剧情、任务、事件或地图场景时，先按 [专项入口](../rimworld-mod/references/quest-chain.md) 选择并读取对应技能，沿用本次 1.6 目标。根据描述分流，无需用户点名。
 
 1. 按 [本地查证](../rimworld-mod/references/local-lookup.md) 核对 1.6 实际构建/上游来源；已匹配的记录直接复用，画像只在比较历史证据时查看。
 2. 执行 [公共制作过程](../rimworld-mod/references/production.md)：需求 → 用途/真实类型 → 上游/配置契约 → 具体计划与制作模式 → 功能小循环 → 验收。沿用已确认方案，真正未定玩法/资源才让玩家选择。

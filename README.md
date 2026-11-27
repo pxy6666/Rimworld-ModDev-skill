@@ -4,7 +4,7 @@
 
 核心顺序是：**先确认用途与真实类型，再查模板和默认值；真正未定的玩法数值与资源才交给玩家或 CLI 决定。**
 
-当前版本为 **1.5.1**。支持按 1.6 / 1.7 分流制作、排错和迁移。发行可交给工坊发布技能，按已验收的发行目录和确认过的页面更新计划上传。技能内容包含 AI 辅助编写；静态检查、编译、游戏内验证和上传结果分别记录。
+技能包当前版本为 **1.6.0**。支持按 RimWorld 1.6 / 1.7 分流制作、排错和迁移，也可从剧情构思推进到任务落地和地图制作。发行可交给工坊发布技能，按已验收的发行目录和确认过的页面更新计划上传。技能内容包含 AI 辅助编写，静态检查、编译、游戏内验证和上传结果分别记录。
 
 ## 选择 Basic 或 Image
 
@@ -13,11 +13,11 @@
 | Basic | [basic/](basic/) / `rimworld-moddev-basic` | 使用已有、外部提供或允许复用的素材，不接入平台生图流程 |
 | Image | [image/](image/) / `rimworld-moddev-image` | 需要外观需求 → 资源规格 → 生图 → 导入 PNG → 视觉检查 → 绑定引用 → 游戏验收 |
 
-两版都包含相同的 11 个入口、共享需求/计划/制作/复查流程、版本资料与资源检查。Image 的生图流程需要会话中实际可用的图像工具，或用户选定且可调用的外部来源。
+两版都包含相同的 14 个入口、共享需求/计划/制作/复查流程、版本资料与资源检查。Image 的生图流程需要会话中实际可用的图像工具，或用户选定且可调用的外部来源。
 
 **同一工程/客户端只启用一版。** 两版技能同名，同时安装可能出现重复入口。切换时先移除或禁用旧版；手动安装须替换整套技能及资源。版本入口会引用公共资料。
 
-## 按版本选择入口
+## 按任务选择入口
 
 | 技能 | 什么时候用 |
 | --- | --- |
@@ -27,6 +27,9 @@
 | `rimworld-help` | 第一次使用、目标尚不明确，或不知道下一步 |
 | `rimworld-setup` | 检查游戏路径、编译环境、检索/MCP 和必要工具能力 |
 | `rimworld-mod` / `rimworld-debug` | 版本未定、双版本或继续使用旧名称时的路由入口 |
+| [`rimworld-story-design`](basic/skills/rimworld-story-design/SKILL.md) | 构思或审阅剧情、开局和事件链，确认触发入口、分支与结局，交付状态图 |
+| [`rimworld-quest-build`](basic/skills/rimworld-quest-build/SKILL.md) | 落地已构思的任务和事件，核实游戏支持，连接任务信号、状态继承和结算 |
+| [`rimworld-map-build`](basic/skills/rimworld-map-build/SKILL.md) | 制作独立场景或任务地点，配置地形、建筑结构、刷出物、Pawn、防御和出口 |
 | `rimworld-release` | 核对成果、依赖与资源来源，生成本地发行目录、清单和收据 |
 | `rimworld-publish` | 用户授权后将经核验的发行目录上传到 Steam 工坊；可用同一记录续传 |
 
@@ -62,6 +65,9 @@ YourMod/
     ├── rimworld-setup/
     ├── rimworld-mod/
     ├── rimworld-debug/
+    ├── rimworld-story-design/
+    ├── rimworld-quest-build/
+    ├── rimworld-map-build/
     ├── rimworld-release/
     └── rimworld-publish/
 ```
@@ -95,6 +101,18 @@ Cursor 也支持项目级 `.agents/skills/` 与 `.cursor/skills/`。两客户端
 ```
 
 无需自己填写内部类名、全部 XML 或完整美术规格。代理负责技术查证；玩法取舍、必要资源来源和未定数值按你选的模式解决。
+
+### 剧情、任务与地图
+
+直接在制作需求里说明要做剧情、任务、事件或地图场景，主制作流程会按目标引入对应专项。也可以直接点名技能，从当前进度开始。
+
+- 只有构思时，可以说「我想做一条从调查异象开始的剧情。先一起确认触发入口和结局，给我一张可以审阅的状态图。」
+- 有任务方案时，可以说「用 `rimworld-quest-build` 落地这份设计，先查证触发、分支和读档后的状态，再列出需要的地图和其他待制作项。」
+- 只做地图时，可以说「用 `rimworld-map-build` 制作任务地点。按我给的布局配置结构、物品、Pawn 和防御，并核对出口与任务结算如何连接。」
+
+策划确定后可交给任务实现，涉及场景时再调用地图技能。任务制作中新想到的物品或美术资源可记入待制作清单，再回到对应制作入口。
+
+两版都附有[玩家可见中文文案参考](basic/skills/rimworld-mod/references/player-facing-text.md)，可在起草或改稿时指定使用。「中文剧情文本」适用于公告、对白、信件和任务提示。「中文物品文本」适用于物品和建筑说明、研究说明与属性面板，分别处理物件用途、技术变化和可核实的数值。
 
 ### 迁移与重做怎样选择
 
@@ -197,13 +215,15 @@ python <当前rimworld-debug目录>/scripts/content_load.py check --root <mod根
 
 ## English quick start
 
-RimWorld ModDev Skill covers mod development, debugging, migration and release for RimWorld 1.6 and 1.7. Version **1.5.1** adds a resumable Steam Workshop workflow for reviewed release directories.
+RimWorld ModDev Skill covers mod development, debugging, migration and release for RimWorld 1.6 and 1.7. Skill package version **1.6.0** adds workflows for story design, quest implementation and map building.
 
 Choose **Basic** for supplied or reused assets, or **Image** for a workflow that includes image generation. Enable one variant only. Image generation requires an actual tool or a configured, supported provider; the skill does not supply the service.
 
 For manual setup, copy all skill folders and catalog.json from `basic/skills/` or `image/skills/` into your mod project's `.agents/skills/`, keeping references, scripts and data. Use the installation commands above for the supported plugin clients.
 
 Start with `rimworld-help` or `rimworld-setup`. For development, provide your game version, project/game paths, intended player behavior, constraints, and any selected upstream mods. Choose user-controlled values, agent-decided values, or a mixed mode. The agent establishes the actual content type, verifies templates/defaults and interfaces, records a concrete plan, and obtains confirmation before implementation unless an applicable prior approval or explicit delegation already exists.
+
+Describe any story, quest, incident or map work in your mod request to route into the relevant workflow. You can also call `rimworld-story-design` for story outlines and state diagrams, `rimworld-quest-build` for signals and persistent quest state, or `rimworld-map-build` for sites, structures and spawns. Both variants include separate Chinese writing prompts for player-facing story text and for item, research and stat text. [Player-facing text guide](basic/skills/rimworld-mod/references/player-facing-text.md)
 
 For migration, choose basic compatibility or improved implementation; if unspecified, the agent asks. For a rewrite, agree on technical delivery, usable target functionality, or release readiness, including relevant test cases and who supplies game-test evidence. These choices are independent; compilation is not gameplay acceptance. Independent work can be delegated to available, authorized subagents.
 
