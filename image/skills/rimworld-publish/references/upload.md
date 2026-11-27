@@ -19,7 +19,7 @@ python -X utf8 <技能目录>/scripts/publish.py plan --content <已核验Mod目
 
 ## 页面写入范围
 
-更新总是提交已核验的 Mod 内容。以下输入仅在用户选择时纳入计划；未选择的既有页面字段保持原样。不会从工程素材文件夹或 `About` 自动推导页面变更。
+更新总是提交已核验的 Mod 内容。以下输入仅在用户选择时纳入计划，未选择的既有页面字段保持原样。
 
 | 变更 | 计划参数与边界 |
 | --- | --- |
@@ -28,8 +28,12 @@ python -X utf8 <技能目录>/scripts/publish.py plan --content <已核验Mod目
 | 本次变更说明 | `--changelog`；仅用于本次提交，不代替页面描述 |
 | 其它语言槽 | 重复 `--locale LANGUAGE=FILE`；每个文件为 UTF-8 JSON，只能含 `title` 和/或 `description`；未声明的语言和字段保留 |
 | 图片库 | `--replace-screenshots <图片路径 ...>` 明确替换图片；只写标记、不带路径明确清空图片。保留不属图片的预览内容；未指定不触碰图片库 |
+| 描述里的前置说明 | `--append-requirements` 读取已核验包的 `About.xml`，只追加到本次明确选中且提供文本的描述槽。必需依赖和加载顺序分别显示 |
+| 工坊必需项目和 DLC | `--add-dependencies` 单独选择。只添加已知 ID 且尚未登记的必需依赖，保留已有条目。单纯的 `loadAfter` 只用于说明 |
 
-计划要明确区分主图与附加截图。替换、清空、公开或其它会改变页面效果的选项不从本地空目录或缺素材推断。新建成功记录 journal 返回的真实 ID；用户同意保存标记后才更新工程 `About/PublishedFileId.txt` 并重新打包。Steam 提示须接受工坊协议时，请用户在 Steam 处理并核对可见性；转公开是独立选择。
+附加前置说明和写入工坊依赖可独立选择。依赖取发行包支持版本所用声明的并集，优先使用 `About.xml` 的工坊链接，缺链接时以本机已安装工坊内容的包 ID 匹配。审阅计划中的依赖来源和 ID，尤其是只在某个版本需要的依赖，因为工坊展示适用于整个条目。无法明确解析的必需依赖列入 `unresolvedRequired`，需人工核对。状态里的 `complete` 表示已排入的步骤都完成，`dependenciesComplete` 另报告显式选择的依赖项是否都已核实。
+
+计划要明确区分主图与附加截图。替换、清空和公开均依据用户选择。已选图片达到 1 MB 时，离线计划用 Pillow 压缩副本，原图留在原处。主图副本采用 PNG 且两边至少 512 px。审阅压缩结果，保留 journal 同目录内记录的压缩副本，上传前会校验它的哈希。没有 Pillow 时可安装 Pillow 或提供更小的图片。
 
 替换图库期间请停止在其它客户端编辑同一物品的预览。Steam 按位置移除预览；工具会在提交前重新核对图库，有变化就停止。
 
@@ -40,9 +44,14 @@ python -X utf8 <技能目录>/scripts/publish.py plan --content <已核验Mod目
 ```powershell
 python -X utf8 <技能目录>/scripts/publish.py upload --journal <本地记录.json>
 python -X utf8 <技能目录>/scripts/publish.py status --journal <本地记录.json>
+python -X utf8 <技能目录>/scripts/publish.py inspect --item-id <工坊ID> --language schinese --language english
 ```
 
-保留同一个 journal。每步各自报告状态，不把部分完成说成整次成功。
+`inspect` 通过当前 Steam 会话只读查询页面与工坊依赖。语言内容以 Steam 返回为准，Steam 可能回退到默认语言。依赖查询缺少接口或结果不完整时，报告查询错误。
+
+首次创建并完成上传后，用户同意保存标记时运行 `bind --journal <本地记录.json> --project <源工程根>`。它将新 ID 写入源工程的 `About/PublishedFileId.txt`，核对包身份并保护已有绑定。后续发布前重新打包。Steam 提示须接受工坊协议时，请用户在 Steam 处理并核对可见性。转公开是独立选择。
+
+保留同一个 journal，逐步报告状态。工坊依赖写入后会回读核对。确认缺失的项可随同一 journal 续传，续传先查当前已有依赖。写入后回读失败，或写入回执有歧义时按结果未知处理。
 
 | 状态 | 下一步 |
 | --- | --- |

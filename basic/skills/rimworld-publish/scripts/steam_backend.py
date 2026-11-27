@@ -119,6 +119,17 @@ def _packed(name, pack, fields):
 
 def _abi(pack):
     u64, i32, u32 = C.c_uint64, C.c_int32, C.c_uint32
+    # Valve isteamugc.h / isteamremotestorage.h. Only read the prefix through the child count.
+    details = [
+        ('file_id', u64), ('result', i32), ('file_type', i32),
+        ('creator_app_id', u32), ('consumer_app_id', u32), ('title', C.c_char * 129),
+        ('description', C.c_char * 8000), ('owner', u64), ('created', u32), ('updated', u32),
+        ('added', u32), ('visibility', i32), ('banned', C.c_bool), ('accepted', C.c_bool),
+        ('tags_truncated', C.c_bool), ('tags', C.c_char * 1025), ('file', u64), ('preview_file', u64),
+        ('file_name', C.c_char * 260), ('file_size', i32), ('preview_size', i32),
+        ('url', C.c_char * 256), ('votes_up', u32), ('votes_down', u32), ('score', C.c_float),
+        ('child_count', u32),
+    ]
     return {
         'message': _packed('CallbackMsg', pack, [('user', i32), ('callback', i32),
                             ('data', C.c_void_p), ('size', i32)]),
@@ -126,10 +137,14 @@ def _abi(pack):
         'create': _packed('CreateItemResult', pack, [('result', i32), ('file_id', u64), ('needs_accept', C.c_bool)]),
         'submit': _packed('SubmitItemUpdateResult', pack, [('result', i32), ('needs_accept', C.c_bool), ('file_id', u64)]),
         'query': _packed('QueryResultPrefix', pack, [('handle', u64), ('result', i32), ('returned', u32), ('total', u32)]),
-        'details': _packed('UGCDetailsPrefix', pack, [('file_id', u64), ('result', i32), ('file_type', i32),
-                           ('creator_app_id', u32), ('consumer_app_id', u32), ('title', C.c_char * 129),
-                           ('description', C.c_char * 8000), ('owner', u64), ('created', u32), ('updated', u32),
-                           ('added', u32), ('visibility', i32)]),
+        'details': _packed('UGCDetailsPrefix', pack, details),
+        'add_dependency': _packed('AddUGCDependencyResult', pack,
+                                  [('result', i32), ('file_id', u64), ('dependency', u64)]),
+        'add_app_dependency': _packed('AddAppDependencyResult', pack,
+                                      [('result', i32), ('file_id', u64), ('dependency', u32)]),
+        'app_dependencies': _packed('GetAppDependenciesResult', pack, [
+            ('result', i32), ('file_id', u64), ('apps', u32 * 32), ('returned', u32), ('total', u32),
+        ]),
     }
 
 
@@ -204,6 +219,7 @@ class SteamworksUGC:
         self._types = _abi(self.profile['callbackPack'])
         self._cleanup = None
         self._updates = {}
+        self._dependencies_bound = False
 
     def __enter__(self):
         if not _SESSION.acquire(blocking=False):
@@ -248,6 +264,7 @@ class SteamworksUGC:
         finally:
             self._cleanup = None
             self._updates.clear()
+            self._dependencies_bound = False
 
     def _bind(self):
         void, u64, u32, i32, char, flag = C.c_void_p, C.c_uint64, C.c_uint32, C.c_int32, C.c_char_p, C.c_bool
@@ -291,6 +308,28 @@ class SteamworksUGC:
         for name, (result, params) in specs.items():
             fn = getattr(self._lib, name)
             fn.restype, fn.argtypes = result, params
+
+    def _bind_dependencies(self):
+        if self._dependencies_bound:
+            return
+        void, u64, u32, flag = C.c_void_p, C.c_uint64, C.c_uint32, C.c_bool
+        specs = {
+            'AddDependency': (u64, [void, u64, u64]),
+            'AddAppDependency': (u64, [void, u64, u32]),
+            'SetReturnChildren': (flag, [void, u64, flag]),
+            'GetQueryUGCChildren': (flag, [void, u64, u32, C.POINTER(u64), u32]),
+            'GetAppDependencies': (u64, [void, u64]),
+        }
+        missing = []
+        for name, (result, params) in specs.items():
+            function = getattr(self._lib, 'SteamAPI_ISteamUGC_' + name, None)
+            if function is None:
+                missing.append(name)
+            else:
+                function.restype, function.argtypes = result, params
+        if missing:
+            raise SteamworksError('Steamworks 库缺少必需项目或 DLC 接口：' + ', '.join(missing))
+        self._dependencies_bound = True
 
     def logged_on(self):
         return bool(self._lib.SteamAPI_ISteamUser_BLoggedOn(self._user))
@@ -380,6 +419,82 @@ class SteamworksUGC:
 
     def remove_screenshot(self, handle, index):
         self._setter('RemoveItemPreview', handle, index)
+
+    def _add_dependency(self, file_id, dependency, name, callback, layout):
+        self._bind_dependencies()
+        call = self._ugc_call(name, file_id, dependency)
+        result = self._wait_apicall(call, callback, self._types[layout], name, mutation=True)
+        if result.file_id != file_id or result.dependency != dependency:
+            raise SteamworksError(f'{name} 回调的物品或依赖 ID 与请求不符', outcome_unknown=True)
+        _result_ok(result.result, name, mutation=True)
+
+    def add_dependency(self, file_id, child):
+        file_id, child = parse_file_id(file_id), parse_file_id(child)
+        if file_id == child:
+            raise ValueError('工坊物品不能把自身列为必需项目')
+        self._add_dependency(file_id, child, 'AddDependency', 3412, 'add_dependency')
+
+    def add_app_dependency(self, file_id, app_id):
+        file_id = parse_file_id(file_id)
+        if type(app_id) is not int or not 0 < app_id < (1 << 32):
+            raise ValueError('DLC AppID 必须是有效的正 uint32 整数')
+        self._add_dependency(file_id, app_id, 'AddAppDependency', 3414, 'add_app_dependency')
+
+    def query_dependencies(self, file_id):
+        file_id = parse_file_id(file_id)
+        self._bind_dependencies()
+        return {'items': self._workshop_dependencies(file_id), 'apps': self._app_dependencies(file_id)}
+
+    def _workshop_dependencies(self, file_id):
+        ids = (C.c_uint64 * 1)(file_id)
+        query = self._ugc_call('CreateQueryUGCDetailsRequest', ids, 1)
+        if query in (0, _MAX_HANDLE):
+            raise SteamworksError('CreateQueryUGCDetailsRequest 返回无效句柄')
+        try:
+            self._setter('SetReturnChildren', query, True)
+            self._setter('SetAllowCachedResponse', query, 0)
+            call = self._ugc_call('SendQueryUGCRequest', query)
+            reply = self._wait_apicall(call, 3401, self._types['query'], 'SendQueryUGCRequest')
+            _result_ok(reply.result, 'SendQueryUGCRequest')
+            if reply.handle != query or reply.returned != 1:
+                raise SteamworksError('必需项目查询未返回请求的唯一结果')
+
+            # Match the existing details query's buffer so an appended SDK field fits.
+            raw = C.create_string_buffer(65536)
+            if not self._ugc_call('GetQueryUGCResult', query, 0, raw):
+                raise SteamworksError('GetQueryUGCResult 失败')
+            details = self._types['details'].from_buffer_copy(raw)
+            _result_ok(details.result, 'GetQueryUGCResult')
+            if details.file_id != file_id or details.consumer_app_id != APPID:
+                raise SteamworksError('必需项目查询返回的工坊物品或游戏 AppID 与请求不符')
+            count = details.child_count
+            if not count:
+                return []
+            if count > 4096:
+                raise SteamworksError(f'必需项目数量超出可验证范围：{count}')
+            children = (C.c_uint64 * count)()
+            if not self._ugc_call('GetQueryUGCChildren', query, 0, children, count):
+                raise SteamworksError('GetQueryUGCChildren 失败')
+            items = list(children)
+            if 0 in items or len(set(items)) != count:
+                raise SteamworksError('Steam 返回的必需项目列表与数量不一致')
+            return items
+        finally:
+            self._ugc_call('ReleaseQueryUGCRequest', query)
+
+    def _app_dependencies(self, file_id):
+        call = self._ugc_call('GetAppDependencies', file_id)
+        result = self._wait_apicall(call, 3416, self._types['app_dependencies'], 'GetAppDependencies')
+        _result_ok(result.result, 'GetAppDependencies')
+        if result.file_id != file_id:
+            raise SteamworksError('DLC 查询返回的工坊物品 ID 与请求不符')
+        # A call result may supply only a page. Never treat partial data as a complete list.
+        if result.returned != result.total or result.returned > len(result.apps):
+            raise SteamworksError(f'Steam 仅返回了部分 DLC 依赖或计数无效：{result.returned}/{result.total}')
+        apps = list(result.apps[:result.returned])
+        if 0 in apps or len(set(apps)) != result.returned:
+            raise SteamworksError('Steam 返回的 DLC 列表与数量不一致')
+        return apps
 
     def submit(self, handle, changenote=''):
         file_id = self._updates.pop(handle, None)

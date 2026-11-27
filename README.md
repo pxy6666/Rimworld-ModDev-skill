@@ -207,6 +207,8 @@ python <当前rimworld-debug目录>/scripts/content_load.py check --root <mod根
 
 使用 [rimworld-publish](basic/skills/rimworld-publish/SKILL.md) 离线制定计划，核对具体发行目录及其验收记录、目标物品和明确选定的页面改动。更新默认只提交 Mod 内容；已存在的页面字段按用户明确选择修改。确认计划并授权后，使用已登录的 Windows Steam 桌面客户端上传。保留本地 journal 以续传；结果未知时先查证再继续。[上传与恢复](basic/skills/rimworld-publish/references/upload.md)
 
+需要补充前置说明时，用 `--append-requirements` 追加到已选描述。需要登记工坊必需项目或 DLC 时，单独选 `--add-dependencies`，上传后回读验证。明确选中的超限图片可用 Pillow 离线压缩。用 `inspect` 只读检查页面与依赖，新建上传完成后可用 `bind` 将新 ID 保存到源工程。
+
 ## 更新与反馈
 
 插件用户从原安装入口刷新/更新；手动用户重新下载并替换选定版本的整套技能。维护时从公共源码同步两版后一起发布，保留 Basic/Image 的资源差异。
@@ -230,3 +232,5 @@ For migration, choose basic compatibility or improved implementation; if unspeci
 Project records support incremental additions and resuming work. Evidence is reused only while its source and conditions remain valid. The repository includes selected build catalogs, query scripts and a release packager.
 
 For Workshop publishing, prepare a checked release directory with `rimworld-release`. Use `rimworld-publish` to plan and authorize an upload of that exact directory. Existing page fields are changed only when selected explicitly. Upload uses the Windows Steam desktop session. Keep the journal to resume a failed attempt, and verify ambiguous outcomes before retrying. [Upload and recovery](basic/skills/rimworld-publish/references/upload.md)
+
+Choose `--append-requirements` to extend selected descriptions or `--add-dependencies` to add missing Workshop items and DLC. Oversized selected images can be compressed offline with Pillow. Use `inspect` to read the current page and dependencies, and `bind` to record a new item ID in the source project after uploading.
